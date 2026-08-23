@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Vazirmatn", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Lalezar", "Vazirmatn", sans-serif;
+  --font-code: "Fira Code", "Vazirmatn", ui-monospace, monospace;
+
+  --color-ink-950: #070c11;
+  --color-ink-900: #0b1118;
+  --color-ink-850: #0f1620;
+  --color-ink-800: #131c28;
+  --color-ink-700: #1b2735;
+  --color-ink-600: #26374a;
+
+  --color-mist-500: #5d7189;
+  --color-mist-400: #8298ae;
+  --color-mist-300: #a8bcce;
+  --color-mist-200: #ccdae7;
+  --color-mist-100: #eaf1f7;
+
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+
+  --color-goldx-400: #f5b84b;
+  --color-rosex-400: #f2788f;
+  --color-skyx-400: #5cb6ee;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: #070c11;
+  color: #eaf1f7;
+}
+
+body {
+  font-family: "Vazirmatn", "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
+}
+
+::selection {
+  background: rgba(16, 185, 129, 0.35);
+  color: #eaf1f7;
+}
+
+/* لایه‌های محیطی: نویز و هاله‌های نورانی ثابت */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 460px at 88% -8%, rgba(16, 185, 129, 0.08), transparent 62%),
+    radial-gradient(760px 420px at -6% 108%, rgba(92, 182, 238, 0.06), transparent 60%),
+    radial-gradient(620px 380px at 45% 118%, rgba(245, 184, 75, 0.04), transparent 60%);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* اسکرول‌بار باریک تیره */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1b2735;
+  border-radius: 8px;
+  border: 2px solid #070c11;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ورودی رنگ بومی بدون قاب زشت */
+input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 10px;
+}
+input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 10px;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.72);
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes saved-flash {
+  0% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.saved-flash {
+  animation: saved-flash 1.6s ease forwards;
+}
