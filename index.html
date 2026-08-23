@@ -1,19 +1,1237 @@
-<!doctype html>
-<html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#070c11" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta
-      name="description"
-      content="استودیو تولید کارت و کاور ریلز استارتیچ — طراحی زنده، خروجی PNG با کیفیت ۱۰۸۰ و ذخیره خودکار روی دستگاه"
-    />
-    <title>استودیو کارت و ریلز استارتیچ</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استودیو پیشرفته تولید کارت استارتیچ | Starteach Card Studio Pro</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- HTML2Canvas for Ultra-HD PNG Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Google Fonts & Persian Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/lalezar-font@v2.0.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    .font-vazir { font-family: 'Vazirmatn', sans-serif; }
+    .font-shabnam { font-family: 'Shabnam', sans-serif; }
+    .font-lalezar { font-family: 'Lalezar', cursive; }
+    .font-inter { font-family: 'Inter', sans-serif; }
+    .font-mono-code { font-family: 'Fira Code', monospace; }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
+
+    #toastNotification {
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-vazir min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 pb-20 lg:pb-0">
+
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-3 md:px-6 py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 text-lg shadow-md shadow-emerald-500/20">
+          ST
+        </div>
+        <div>
+          <h1 class="font-bold text-sm md:text-base text-slate-100 flex items-center gap-2">
+            استودیو ساخت کارت استارتیچ
+            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full hidden sm:inline-block">v5.0 Full-Control</span>
+          </h1>
+          <p class="text-[11px] text-slate-400 hidden md:block">سازنده کارت‌های سفارشی با قابلیت ویرایش و کنترل کامل تمام المان‌ها</p>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button id="openResetModalBtn" title="بازنشانی تنظیمات" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition border border-slate-700 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden sm:inline">بازنشانی</span>
+        </button>
+
+        <button id="exportBtn" class="px-4 py-1.5 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg transition shadow-lg shadow-emerald-500/25 flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>دانلود PNG</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="lg:hidden bg-slate-900/90 border-b border-slate-800 p-1.5 flex justify-around text-xs sticky top-[53px] z-30 backdrop-blur overflow-x-auto">
+    <button class="mobile-tab-btn active-tab px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold whitespace-nowrap" data-tab="tab-content">محتوا و سناریو</button>
+    <button class="mobile-tab-btn px-3 py-1.5 rounded-lg text-slate-400 whitespace-nowrap" data-tab="tab-branding">برند و آیکون</button>
+    <button class="mobile-tab-btn px-3 py-1.5 rounded-lg text-slate-400 whitespace-nowrap" data-tab="tab-colors">رنگ‌بندی کامل</button>
+    <button class="mobile-tab-btn px-3 py-1.5 rounded-lg text-slate-400 whitespace-nowrap" data-tab="tab-toggles">نمایش/مخفی المان‌ها</button>
+  </div>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+    
+    <!-- CONTROLS SIDEBAR -->
+    <section class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-5 shadow-xl">
+      
+      <!-- TAB 1: CONTENT & TEMPLATES -->
+      <div id="tab-content" class="tab-panel space-y-4">
+        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          محتوا و سناریوهای آماده
+        </h2>
+
+        <!-- Scenario Quick Fill -->
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">بارگذاری فوری سناریوهای استارتیچ</label>
+          <select id="scenarioSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-medium focus:border-emerald-500 focus:outline-none">
+            <option value="">-- انتخاب سناریو آماده --</option>
+            <option value="s1">سناریو ۱: منشی هوشمند (اپلیکیشن برخط)</option>
+            <option value="s2">سناریو ۲: هوش مصنوعی پژوهشی (دانشجویان)</option>
+            <option value="s3">سناریو ۳: آزمون استخدامی (آموزش و پرورش)</option>
+            <option value="s4">سناریو ۴: تست پوینت (مشکل/راهکار)</option>
+            <option value="s5">سناریو ۵: طراحی سایت (تغییر کوچک مشتری)</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs text-slate-300 font-medium">متن اصلی کارت</label>
+            <span class="text-[10px] text-emerald-400 font-mono">راهنما: *هایلایت* | --- تفکیک</span>
+          </div>
+          <textarea id="cardContent" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs md:text-sm text-slate-100 focus:border-emerald-500 focus:outline-none leading-relaxed dir-rtl font-vazir" placeholder="متن خود را بنویسید..."></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">عنوان فرعی / بج (Hook)</label>
+            <input type="text" id="subTitleInput" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="⚡ نکته مهم | app.py">
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">تایپوگرافی / فونت</label>
+            <select id="fontFamily" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="font-vazir">وزیرمتن (Vazirmatn)</option>
+              <option value="font-shabnam">شبنم (Shabnam)</option>
+              <option value="font-lalezar">لاله‌زار (ضخیم)</option>
+              <option value="font-inter">Inter (لاتین)</option>
+              <option value="font-mono-code">Fira Code (کد/ترمینال)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">اندازه قلم متن</label>
+            <select id="fontSize" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="text-base">کوچک (base)</option>
+              <option value="text-lg">متوسط (lg)</option>
+              <option value="text-xl" selected>استاندارد (xl)</option>
+              <option value="text-2xl">بزرگ (2xl)</option>
+              <option value="text-3xl">خیلی بزرگ (3xl)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">قالب ساختاری کارت</label>
+            <select id="templateSelect" class="w-full bg-slate-950 border border-emerald-500/50 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-bold focus:border-emerald-500 focus:outline-none">
+              <option value="tweet" selected>۱. توییتر / X Card</option>
+              <option value="hook">۲. Reel Hook (عنوان جنجالی)</option>
+              <option value="problem">۳. مشکل / راهکار (❌/✅)</option>
+              <option value="code">۴. Code / Tech Tip (ترمینال)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Problem / Solution Text Customization -->
+        <div id="problemTextSection" class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
+          <label class="text-xs font-bold text-amber-400 block">ویرایش متن باکس مشکل و راهکار (قالب ۳)</label>
+          <div class="space-y-2">
+            <div>
+              <label class="text-[10px] text-slate-400">متن بخش مشکل (❌):</label>
+              <input type="text" id="problemTextInput" value="طراحی دستی سوالات و تصحیح ۱۲۰ برگه امتحانی تا ۲ نیمه‌شب" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-rose-200">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400">متن بخش راهکار (✅):</label>
+              <input type="text" id="solutionTextInput" value="طراحی هوشمند آزمون در ۲ دقیقه و تصحیح آنلاین آنی با تست پوینت" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-emerald-200">
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Stats Input Section -->
+        <div class="pt-3 border-t border-slate-800/80">
+          <label class="block text-xs font-bold text-slate-300 mb-2">ویرایش اعداد نوار آمار تعاملات</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">کامنت 💬</label>
+              <input type="text" id="statComments" value="142" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 font-mono text-center">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">بازنشر 🔁</label>
+              <input type="text" id="statRetweets" value="890" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 font-mono text-center">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">لایک ❤️</label>
+              <input type="text" id="statLikes" value="4.2K" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 font-mono text-center">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">بازدید 👁️</label>
+              <input type="text" id="statViews" value="28.5K" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 font-mono text-center">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">ذخیره / بوکمارک 🔖</label>
+              <input type="text" id="statBookmarks" value="512" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 font-mono text-center">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: BRANDING & PLATFORM -->
+      <div id="tab-branding" class="tab-panel hidden space-y-4">
+        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          اطلاعات برند و پلتفرم
+        </h2>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">نام برند</label>
+            <input type="text" id="brandName" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">آیدی / نام کاربری</label>
+            <input type="text" id="brandHandle" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">دامنه / آدرس وب‌سایت</label>
+            <input type="text" id="brandDomain" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">آیکون پلتفرم (گوشه)</label>
+            <select id="platformIconSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              <option value="x">توییتر / X</option>
+              <option value="instagram">اینستاگرام</option>
+              <option value="telegram">تلگرام</option>
+              <option value="youtube">یوتیوب</option>
+              <option value="threads">تردز (Threads)</option>
+              <option value="linkedin">لینکدین</option>
+              <option value="tiktok">تیک‌تاک</option>
+              <option value="starteach">نماد استارتیچ</option>
+              <option value="none">بدون آیکون</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">تیک تایید (Verified)</label>
+            <select id="verifiedToggle" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              <option value="emerald">سبز استارتیچ</option>
+              <option value="blue">آبی توییتر</option>
+              <option value="gold">طلایی سازمان</option>
+              <option value="none">بدون تیک</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">چیدمان هدر</label>
+            <select id="headerAlign" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              <option value="right">راست‌چین (RTL)</option>
+              <option value="left">چپ‌چین (LTR)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Custom Logo Upload Box -->
+        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-medium text-slate-300">تصویر لوگوی اختصاصی</label>
+            <button id="removeLogoBtn" class="text-[11px] text-rose-400 hover:underline hidden">حذف تصویر</button>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="file" id="logoInput" accept="image/*" class="hidden">
+            <button onclick="document.getElementById('logoInput').click()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              آپلود فایل عکس
+            </button>
+            <span id="logoStatus" class="text-[11px] text-slate-400">لوگوی متنی فعال است</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: COMPLETE COLOR CUSTOMIZATION -->
+      <div id="tab-colors" class="tab-panel hidden space-y-4">
+        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          تم‌های آماده و سفارشی‌سازی کامل رنگ‌ها
+        </h2>
+
+        <!-- Theme Presets -->
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-2">پالت‌های رنگی آماده تک‌کلیکی</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+            <button onclick="applyPreset('mint')" class="p-2 bg-slate-950 border border-slate-800 hover:border-emerald-500 rounded-lg text-right flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-500"></span>
+              <span class="text-[11px] text-slate-200">سبز نعنایی</span>
+            </button>
+            <button onclick="applyPreset('cyber')" class="p-2 bg-slate-950 border border-slate-800 hover:border-cyan-500 rounded-lg text-right flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-cyan-400"></span>
+              <span class="text-[11px] text-slate-200">سایبرپانک</span>
+            </button>
+            <button onclick="applyPreset('purple')" class="p-2 bg-slate-950 border border-slate-800 hover:border-purple-500 rounded-lg text-right flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-purple-500"></span>
+              <span class="text-[11px] text-slate-200">بنفش نئون</span>
+            </button>
+            <button onclick="applyPreset('orange')" class="p-2 bg-slate-950 border border-slate-800 hover:border-orange-500 rounded-lg text-right flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-orange-500"></span>
+              <span class="text-[11px] text-slate-200">غروب نارنجی</span>
+            </button>
+            <button onclick="applyPreset('crimson')" class="p-2 bg-slate-950 border border-slate-800 hover:border-rose-500 rounded-lg text-right flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-rose-500"></span>
+              <span class="text-[11px] text-slate-200">قرمز آتشین</span>
+            </button>
+            <button onclick="applyPreset('light')" class="p-2 bg-slate-950 border border-slate-800 hover:border-slate-300 rounded-lg text-right flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-slate-200"></span>
+              <span class="text-[11px] text-slate-200">کلاسیک روشن</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Granular Color Pickers -->
+        <div class="pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">هایلایت (*متن*)</label>
+            <input type="color" id="highlightColor" value="#10b981" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">متن اصلی</label>
+            <input type="color" id="textColor" value="#f8fafc" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">نام برند</label>
+            <input type="color" id="brandNameColor" value="#f8fafc" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">آیدی (@handle)</label>
+            <input type="color" id="brandHandleColor" value="#94a3b8" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">پس‌زمینه کارت</label>
+            <input type="color" id="cardBgColor" value="#0f172a" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">حاشیه / کادر کارت</label>
+            <input type="color" id="cardBorderColor" value="#334155" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">پس‌زمینه بوم (Canvas)</label>
+            <input type="color" id="canvasBgColor" value="#020617" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">درخشش مرکز (Glow)</label>
+            <input type="color" id="glowColor" value="#10b981" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">متن بج / عنوان</label>
+            <input type="color" id="subTitleTextColor" value="#10b981" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">پس‌زمینه بج / عنوان</label>
+            <input type="color" id="subTitleBgColor" value="#064e3b" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">باکس مشکل (❌)</label>
+            <input type="color" id="problemBgColor" value="#450a0a" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">باکس راهکار (✅)</label>
+            <input type="color" id="solutionBgColor" value="#064e3b" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-800/80">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">الگوی پس‌زمینه بوم</label>
+            <select id="bgPatternSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              <option value="grid">شبکه شطرنجی (Grid)</option>
+              <option value="dots">نقطه‌ای (Dots)</option>
+              <option value="glow">درخشش مرکز (Glow)</option>
+              <option value="solid">تک رنگ ساده</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">ابعاد خروجی</label>
+            <select id="aspectRatioSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              <option value="9:16">9:16 (ریلز و استوری)</option>
+              <option value="1:1">1:1 (پست مربعی)</option>
+              <option value="16:9">16:9 (بنر/توییتر)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: VISIBILITY TOGGLES (SHOW / HIDE EVERYTHING) -->
+      <div id="tab-toggles" class="tab-panel hidden space-y-4">
+        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          تنظیمات کامل نمایش و مخفی‌سازی المان‌ها
+        </h2>
+
+        <div class="space-y-2.5 divide-y divide-slate-800/60">
+          
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-xs text-slate-200">نمایش تصویر / آواتار لوگو</span>
+            <input type="checkbox" id="toggleLogo" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200">نمایش نام برند</span>
+            <input type="checkbox" id="toggleBrandName" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200">نمایش آیدی (@handle)</span>
+            <input type="checkbox" id="toggleBrandHandle" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200">نمایش بج / عنوان فرعی</span>
+            <input type="checkbox" id="toggleSubTitle" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200">نمایش تیک تایید (Verified)</span>
+            <input type="checkbox" id="toggleBadge" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200">نمایش آیکون پلتفرم (گوشه بالا)</span>
+            <input type="checkbox" id="togglePlatformIcon" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200">نمایش آدرس سایت / دامنه</span>
+            <input type="checkbox" id="toggleDomain" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-200 font-bold text-emerald-400">نمایش نوار آمار تعامل (کل فوتر آمار)</span>
+            <input type="checkbox" id="toggleStatsBar" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+          </div>
+
+          <!-- Individual Stats Toggles -->
+          <div class="pt-2 pr-4 space-y-2 border-r-2 border-slate-800">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">نمایش کامنت 💬</span>
+              <input type="checkbox" id="toggleComments" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">نمایش بازنشر 🔁</span>
+              <input type="checkbox" id="toggleRetweets" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">نمایش لایک ❤️</span>
+              <input type="checkbox" id="toggleLikes" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">نمایش بازدید (View) 👁️</span>
+              <input type="checkbox" id="toggleViews" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">نمایش ذخیره / بوکمارک 🔖</span>
+              <input type="checkbox" id="toggleBookmarks" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT SIDEBAR: LIVE CANVAS PREVIEW -->
+    <section class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col items-center justify-center min-h-[550px] overflow-hidden relative">
+      
+      <!-- Canvas Controls Top Bar -->
+      <div class="w-full flex items-center justify-between pb-3 border-b border-slate-800 mb-4 text-xs text-slate-400 flex-wrap gap-2">
+        <span class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          پیش‌نمایش زنده خروجی
+        </span>
+        
+        <div class="flex items-center gap-2">
+          <label class="text-[10px] text-slate-400">مقیاس نمایش:</label>
+          <select id="previewScaleSelect" class="bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-[11px] text-slate-300">
+            <option value="fit" selected>تطبیق تلقایی (Fit)</option>
+            <option value="1">100%</option>
+            <option value="0.75">75%</option>
+            <option value="0.5">50%</option>
+          </select>
+          <span id="aspectRatioLabel" class="font-mono bg-slate-800 px-2 py-0.5 rounded text-[11px] text-slate-300">9:16</span>
+        </div>
+      </div>
+
+      <!-- PREVIEW CONTAINER BOX -->
+      <div class="w-full flex justify-center items-center overflow-auto p-2 min-h-[450px]">
+        <div id="previewWrapper" class="transition-all duration-300 flex items-center justify-center">
+          
+          <!-- TARGET EXPORT NODE (Captured by html2canvas) -->
+          <div id="exportTarget" class="bg-slate-950 relative overflow-hidden flex items-center justify-center transition-all p-6 md:p-10 select-none shadow-2xl">
+            
+            <!-- Dynamic Background Glow / Grid -->
+            <div id="bgGlow" class="absolute inset-0 pointer-events-none"></div>
+            <div id="bgPattern" class="absolute inset-0 pointer-events-none"></div>
+
+            <!-- CARD CONTAINER NODE (Dynamic Template Content Injected Here) -->
+            <div id="cardElement" class="w-full max-w-xl rounded-3xl p-6 md:p-8 text-white relative z-10 transition-all border shadow-2xl">
+              <!-- Rendered dynamically by JS template engine -->
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toastNotification" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-emerald-500/40 text-slate-100 px-5 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-medium opacity-0 pointer-events-none transform translate-y-4">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <span id="toastText">عملیات با موفقیت انجام شد</span>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="resetModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <h3 class="font-bold text-base text-slate-100">بازنشانی تنظیمات اولیه؟</h3>
+      <p class="text-xs text-slate-400 leading-relaxed">آیا مطمئن هستید که می‌خواهید تمام رنگ‌ها و متون به حالت کارخانه بازگردند؟ این عمل قابل بازگشت نیست.</p>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button id="cancelResetBtn" class="px-4 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">انصراف</button>
+        <button id="confirmResetBtn" class="px-4 py-2 text-xs font-bold bg-rose-500 hover:bg-rose-400 text-white rounded-lg">بله، بازنشانی شود</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PLATFORM_ICONS = {
+      x: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+      instagram: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+      telegram: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
+      youtube: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+      threads: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12.186 24c-3.15 0-5.748-.999-7.72-2.969C2.488 19.056 1.5 16.037 1.5 12.05c0-3.992.984-7.018 2.928-8.991C6.398 1.084 8.992.083 12.148.083c3.228 0 5.827.992 7.725 2.948 1.83 1.888 2.767 4.743 2.788 8.486H21.22c-.021-3.376-.842-5.836-2.378-7.319-1.503-1.45-3.535-2.227-6.216-2.227-2.678 0-4.707.785-6.211 2.23-1.536 1.482-2.357 3.942-2.378 7.319 0 3.379.821 5.839 2.357 7.322 1.504 1.447 3.533 2.224 6.211 2.224 2.872 0 4.97-.847 6.417-2.589l1.106 1.051C18.665 22.844 15.922 24 12.186 24z"/></svg>`,
+      linkedin: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>`,
+      tiktok: `<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.57-1.31 1.56-1.3 2.56.01.92.48 1.82 1.23 2.37.87.64 2.07.82 3.09.48.97-.31 1.74-1.14 1.98-2.13.12-.66.11-1.34.11-2.01 0-4.66.01-9.33 0-14z"/></svg>`,
+      starteach: `<span class="font-black text-emerald-400 text-lg tracking-tighter border border-emerald-500/40 px-2 py-0.5 rounded-lg bg-emerald-500/10">ST</span>`,
+      none: ''
+    };
+
+    const COLOR_PRESETS = {
+      mint: { highlightColor: "#10b981", textColor: "#f8fafc", brandNameColor: "#f8fafc", brandHandleColor: "#94a3b8", canvasBgColor: "#020617", cardBgColor: "#0f172a", cardBorderColor: "#1e293b", glowColor: "#10b981", subTitleTextColor: "#10b981", subTitleBgColor: "#064e3b", problemBgColor: "#450a0a", solutionBgColor: "#064e3b" },
+      cyber: { highlightColor: "#38bdf8", textColor: "#f1f5f9", brandNameColor: "#ffffff", brandHandleColor: "#64748b", canvasBgColor: "#030712", cardBgColor: "#0f172a", cardBorderColor: "#06b6d4", glowColor: "#06b6d4", subTitleTextColor: "#38bdf8", subTitleBgColor: "#164e63", problemBgColor: "#450a0a", solutionBgColor: "#164e63" },
+      purple: { highlightColor: "#c084fc", textColor: "#f8fafc", brandNameColor: "#ffffff", brandHandleColor: "#a1a1aa", canvasBgColor: "#090514", cardBgColor: "#18092b", cardBorderColor: "#a855f7", glowColor: "#a855f7", subTitleTextColor: "#c084fc", subTitleBgColor: "#581c87", problemBgColor: "#450a0a", solutionBgColor: "#581c87" },
+      orange: { highlightColor: "#fb923c", textColor: "#fff7ed", brandNameColor: "#ffffff", brandHandleColor: "#a8a29e", canvasBgColor: "#0c0a09", cardBgColor: "#1c1917", cardBorderColor: "#f97316", glowColor: "#f97316", subTitleTextColor: "#fb923c", subTitleBgColor: "#7c2d12", problemBgColor: "#450a0a", solutionBgColor: "#7c2d12" },
+      crimson: { highlightColor: "#f87171", textColor: "#fef2f2", brandNameColor: "#ffffff", brandHandleColor: "#fca5a5", canvasBgColor: "#0f172a", cardBgColor: "#1e0a0a", cardBorderColor: "#ef4444", glowColor: "#ef4444", subTitleTextColor: "#f87171", subTitleBgColor: "#7f1d1d", problemBgColor: "#450a0a", solutionBgColor: "#064e3b" },
+      light: { highlightColor: "#0284c7", textColor: "#0f172a", brandNameColor: "#0f172a", brandHandleColor: "#64748b", canvasBgColor: "#f1f5f9", cardBgColor: "#ffffff", cardBorderColor: "#cbd5e1", glowColor: "#cbd5e1", subTitleTextColor: "#0284c7", subTitleBgColor: "#e0f2fe", problemBgColor: "#fee2e2", solutionBgColor: "#dcfce7" }
+    };
+
+    const SCENARIOS = {
+      s1: {
+        template: "tweet",
+        subTitle: "⚡ اپلیکیشن برخط",
+        cardContent: "وقتی یه مشتری تماس می‌گیره، تو دوشی و اونم زنگ رو قطع می‌کنه...\n\n*اون لحظه حس می‌کنی یه میلیارد تومن از جیبت پریده بیرون! 💸😭*",
+        statComments: "230", statRetweets: "1.1K", statLikes: "5.4K", statViews: "42K", statBookmarks: "890"
+      },
+      s2: {
+        template: "hook",
+        subTitle: "🎓 دستیار هوشمند تحقیقات",
+        cardContent: "استاد: «پروپوزالت باید نوآوری داشته باشه و تا فردا وقت داری.»\n\n*من: باز کردن هوش مصنوعی پژوهشی استارتیچ با خونسردی کامل 😎☕️*",
+        statComments: "180", statRetweets: "940", statLikes: "6.2K", statViews: "51K", statBookmarks: "1.4K"
+      },
+      s3: {
+        template: "tweet",
+        subTitle: "🎯 آزمون استخدامی",
+        cardContent: "حجم منابع آزمون استخدامی انقدر زیاده که احساس می‌کنم برای خوندنشون به ۳ تا مغز و ۴۸ ساعت زمان در یک روز نیاز دارم! 🤯\n\n*خوشبختانه ما تو استارتیچ مغز سوم رو برات ساختیم! 😎*",
+        statComments: "310", statRetweets: "1.5K", statLikes: "7.8K", statViews: "68K", statBookmarks: "2.1K"
+      },
+      s4: {
+        template: "problem",
+        subTitle: "👨‍🏫 تست پوینت معلمان",
+        cardContent: "طراحی دستی سوالات و تصحیح ۱۲۰ برگه امتحانی تا ۲ نیمه‌شب\n---\nطراحی هوشمند آزمون در ۲ دقیقه و تصحیح آنلاین آنی با تست پوینت",
+        problemText: "طراحی دستی سوالات و تصحیح ۱۲۰ برگه امتحانی تا ۲ نیمه‌شب ❌",
+        solutionText: "طراحی هوشمند آزمون در ۲ دقیقه و تصحیح آنلاین آنی با تست پوینت ✅",
+        statComments: "145", statRetweets: "620", statLikes: "3.9K", statViews: "33K", statBookmarks: "780"
+      },
+      s5: {
+        template: "code",
+        subTitle: "script.py",
+        cardContent: "when_client_says = 'فقط یه تغییر کوچیک می‌خوام، نیم‌ساعته تموم میشه!'\n# *و تو می‌دونی این یعنی بازنویسی کل دیتابیس و ۳ شب بی‌خوابی...* 😐",
+        statComments: "420", statRetweets: "2.3K", statLikes: "9.5K", statViews: "85K", statBookmarks: "3.2K"
+      }
+    };
+
+    const DEFAULT_CONFIG = {
+      brandName: "استارتیچ | Starteach",
+      brandHandle: "@starteach.ir",
+      brandDomain: "starteach.ir",
+      verifiedType: "emerald",
+      logoData: null,
+      platformIcon: "x",
+      
+      template: "tweet",
+      subTitle: "⚡ نکته مهم",
+      problemText: "طراحی دستی سوالات و تصحیح ۱۲۰ برگه امتحانی تا ۲ نیمه‌شب ❌",
+      solutionText: "طراحی هوشمند آزمون در ۲ دقیقه و تصحیح آنلاین آنی با تست پوینت ✅",
+      bgPattern: "grid",
+      aspectRatio: "9:16",
+      headerAlign: "right",
+      fontFamily: "font-vazir",
+      fontSize: "text-xl",
+      cardContent: "وقتی مشتری میگه: «فقط یه تغییر کوچیک می‌خوام، نیم‌ساعته تموم میشه!» \n\n*و تو می‌دونی این یه تغییر کوچیک یعنی بازنویسی کل دیتابیس و ۳ شب بی‌خوابی...* 😐",
+      
+      statComments: "142",
+      statRetweets: "890",
+      statLikes: "4.2K",
+      statViews: "28.5K",
+      statBookmarks: "512",
+
+      showLogo: true,
+      showBrandName: true,
+      showBrandHandle: true,
+      showSubTitle: true,
+      showBadge: true,
+      showPlatformIcon: true,
+      showDomain: true,
+      showStatsBar: true,
+      showComments: true,
+      showRetweets: true,
+      showLikes: true,
+      showViews: true,
+      showBookmarks: true,
+
+      highlightColor: "#10b981",
+      textColor: "#f8fafc",
+      brandNameColor: "#f8fafc",
+      brandHandleColor: "#94a3b8",
+      canvasBgColor: "#020617",
+      cardBgColor: "#0f172a",
+      cardBorderColor: "#1e293b",
+      glowColor: "#10b981",
+      subTitleTextColor: "#10b981",
+      subTitleBgColor: "#064e3b",
+      problemBgColor: "#450a0a",
+      solutionBgColor: "#064e3b"
+    };
+
+    let appState = { ...DEFAULT_CONFIG };
+
+    function loadState() {
+      const saved = localStorage.getItem('starteach_studio_pro_v5');
+      if (saved) {
+        try {
+          appState = { ...DEFAULT_CONFIG, ...JSON.parse(saved) };
+        } catch(e) { console.error("Error loading localStorage:", e); }
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('starteach_studio_pro_v5', JSON.stringify(appState));
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastText');
+      text.textContent = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+      }, 2500);
+    }
+
+    // DOM ELEMENTS REFERENCES
+    const brandNameInput = document.getElementById('brandName');
+    const brandHandleInput = document.getElementById('brandHandle');
+    const brandDomainInput = document.getElementById('brandDomain');
+    const platformIconSelect = document.getElementById('platformIconSelect');
+    const verifiedToggle = document.getElementById('verifiedToggle');
+    const headerAlignSelect = document.getElementById('headerAlign');
+    const logoInput = document.getElementById('logoInput');
+    const removeLogoBtn = document.getElementById('removeLogoBtn');
+    const logoStatus = document.getElementById('logoStatus');
+
+    const cardContentInput = document.getElementById('cardContent');
+    const subTitleInput = document.getElementById('subTitleInput');
+    const problemTextInput = document.getElementById('problemTextInput');
+    const solutionTextInput = document.getElementById('solutionTextInput');
+    const fontFamilySelect = document.getElementById('fontFamily');
+    const fontSizeSelect = document.getElementById('fontSize');
+    const scenarioSelect = document.getElementById('scenarioSelect');
+    
+    const statCommentsInput = document.getElementById('statComments');
+    const statRetweetsInput = document.getElementById('statRetweets');
+    const statLikesInput = document.getElementById('statLikes');
+    const statViewsInput = document.getElementById('statViews');
+    const statBookmarksInput = document.getElementById('statBookmarks');
+
+    const highlightColorInput = document.getElementById('highlightColor');
+    const textColorInput = document.getElementById('textColor');
+    const brandNameColorInput = document.getElementById('brandNameColor');
+    const brandHandleColorInput = document.getElementById('brandHandleColor');
+    const cardBgColorInput = document.getElementById('cardBgColor');
+    const cardBorderColorInput = document.getElementById('cardBorderColor');
+    const canvasBgColorInput = document.getElementById('canvasBgColor');
+    const glowColorInput = document.getElementById('glowColor');
+    const subTitleTextColorInput = document.getElementById('subTitleTextColor');
+    const subTitleBgColorInput = document.getElementById('subTitleBgColor');
+    const problemBgColorInput = document.getElementById('problemBgColor');
+    const solutionBgColorInput = document.getElementById('solutionBgColor');
+
+    const templateSelect = document.getElementById('templateSelect');
+    const bgPatternSelect = document.getElementById('bgPatternSelect');
+    const aspectRatioSelect = document.getElementById('aspectRatioSelect');
+    const previewScaleSelect = document.getElementById('previewScaleSelect');
+
+    const toggleLogo = document.getElementById('toggleLogo');
+    const toggleBrandName = document.getElementById('toggleBrandName');
+    const toggleBrandHandle = document.getElementById('toggleBrandHandle');
+    const toggleSubTitle = document.getElementById('toggleSubTitle');
+    const toggleBadge = document.getElementById('toggleBadge');
+    const togglePlatformIcon = document.getElementById('togglePlatformIcon');
+    const toggleDomain = document.getElementById('toggleDomain');
+    const toggleStatsBar = document.getElementById('toggleStatsBar');
+    const toggleComments = document.getElementById('toggleComments');
+    const toggleRetweets = document.getElementById('toggleRetweets');
+    const toggleLikes = document.getElementById('toggleLikes');
+    const toggleViews = document.getElementById('toggleViews');
+    const toggleBookmarks = document.getElementById('toggleBookmarks');
+
+    const exportTarget = document.getElementById('exportTarget');
+    const cardElement = document.getElementById('cardElement');
+    const bgGlow = document.getElementById('bgGlow');
+    const bgPattern = document.getElementById('bgPattern');
+    const aspectRatioLabel = document.getElementById('aspectRatioLabel');
+    const previewWrapper = document.getElementById('previewWrapper');
+
+    function parseHighlights(text) {
+      if (!text) return '';
+      const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return safeText.replace(/\*(.*?)\*/g, (match, p1) => {
+        return `<span style="color: ${appState.highlightColor}; font-weight: 800;">${p1}</span>`;
+      });
+    }
+
+    function applyPreset(presetKey) {
+      if (COLOR_PRESETS[presetKey]) {
+        appState = { ...appState, ...COLOR_PRESETS[presetKey] };
+        saveState();
+        syncControlsFromState();
+        renderPreview();
+        showToast("تم جدید اعمال شد!");
+      }
+    }
+
+    function syncControlsFromState() {
+      brandNameInput.value = appState.brandName;
+      brandHandleInput.value = appState.brandHandle;
+      brandDomainInput.value = appState.brandDomain;
+      platformIconSelect.value = appState.platformIcon;
+      verifiedToggle.value = appState.verifiedType;
+      headerAlignSelect.value = appState.headerAlign;
+
+      cardContentInput.value = appState.cardContent;
+      subTitleInput.value = appState.subTitle;
+      problemTextInput.value = appState.problemText || '';
+      solutionTextInput.value = appState.solutionText || '';
+      fontFamilySelect.value = appState.fontFamily;
+      fontSizeSelect.value = appState.fontSize;
+
+      statCommentsInput.value = appState.statComments;
+      statRetweetsInput.value = appState.statRetweets;
+      statLikesInput.value = appState.statLikes;
+      statViewsInput.value = appState.statViews;
+      statBookmarksInput.value = appState.statBookmarks;
+
+      highlightColorInput.value = appState.highlightColor;
+      textColorInput.value = appState.textColor;
+      brandNameColorInput.value = appState.brandNameColor;
+      brandHandleColorInput.value = appState.brandHandleColor;
+      cardBgColorInput.value = appState.cardBgColor;
+      cardBorderColorInput.value = appState.cardBorderColor;
+      canvasBgColorInput.value = appState.canvasBgColor;
+      glowColorInput.value = appState.glowColor;
+      subTitleTextColorInput.value = appState.subTitleTextColor || '#10b981';
+      subTitleBgColorInput.value = appState.subTitleBgColor || '#064e3b';
+      problemBgColorInput.value = appState.problemBgColor || '#450a0a';
+      solutionBgColorInput.value = appState.solutionBgColor || '#064e3b';
+
+      templateSelect.value = appState.template;
+      bgPatternSelect.value = appState.bgPattern;
+      aspectRatioSelect.value = appState.aspectRatio;
+
+      toggleLogo.checked = appState.showLogo;
+      toggleBrandName.checked = appState.showBrandName;
+      toggleBrandHandle.checked = appState.showBrandHandle;
+      toggleSubTitle.checked = appState.showSubTitle;
+      toggleBadge.checked = appState.showBadge;
+      togglePlatformIcon.checked = appState.showPlatformIcon;
+      toggleDomain.checked = appState.showDomain;
+      toggleStatsBar.checked = appState.showStatsBar;
+      toggleComments.checked = appState.showComments;
+      toggleRetweets.checked = appState.showRetweets;
+      toggleLikes.checked = appState.showLikes;
+      toggleViews.checked = appState.showViews;
+      toggleBookmarks.checked = appState.showBookmarks;
+
+      if (appState.logoData) {
+        removeLogoBtn.classList.remove('hidden');
+        logoStatus.textContent = "تصویر لوگو فعال است";
+      } else {
+        removeLogoBtn.classList.add('hidden');
+        logoStatus.textContent = "لوگوی متنی فعال است";
+      }
+    }
+
+    // MAIN DYNAMIC TEMPLATE RENDER ENGINE
+    function renderPreview() {
+      // 1. Aspect Ratio & Canvas Dimensions
+      exportTarget.style.backgroundColor = appState.canvasBgColor;
+      if (appState.aspectRatio === '9:16') {
+        exportTarget.style.width = '450px';
+        exportTarget.style.height = '800px';
+        aspectRatioLabel.textContent = "9:16 (1080x1920)";
+      } else if (appState.aspectRatio === '1:1') {
+        exportTarget.style.width = '550px';
+        exportTarget.style.height = '550px';
+        aspectRatioLabel.textContent = "1:1 (1080x1080)";
+      } else if (appState.aspectRatio === '16:9') {
+        exportTarget.style.width = '640px';
+        exportTarget.style.height = '360px';
+        aspectRatioLabel.textContent = "16:9 (1920x1080)";
+      }
+
+      // 2. Canvas Background Pattern & Glow
+      bgGlow.style.background = `radial-gradient(circle at center, ${appState.glowColor}35 0, transparent 70%)`;
+      if (appState.bgPattern === 'grid') {
+        bgPattern.className = "absolute inset-0 bg-[linear-gradient(to_right,#1e293b20_1px,transparent_1px),linear-gradient(to_bottom,#1e293b20_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none";
+      } else if (appState.bgPattern === 'dots') {
+        bgPattern.className = "absolute inset-0 bg-[radial-gradient(#33415550_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none";
+      } else if (appState.bgPattern === 'glow') {
+        bgPattern.className = "absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800/40 via-slate-950/20 to-transparent pointer-events-none";
+      } else {
+        bgPattern.className = "hidden";
+      }
+
+      // 3. Header Badge SVG
+      let badgeHTML = '';
+      if (appState.showBadge && appState.verifiedType !== 'none') {
+        if (appState.verifiedType === 'emerald') {
+          badgeHTML = `<svg class="w-5 h-5 text-emerald-400 inline-block" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+        } else if (appState.verifiedType === 'blue') {
+          badgeHTML = `<svg class="w-5 h-5 text-sky-400 inline-block" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+        } else if (appState.verifiedType === 'gold') {
+          badgeHTML = `<svg class="w-5 h-5 text-amber-400 inline-block" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+        }
+      }
+
+      // Platform Icon HTML
+      const platformHTML = (appState.showPlatformIcon && appState.platformIcon !== 'none') ? (PLATFORM_ICONS[appState.platformIcon] || '') : '';
+
+      // Avatar HTML
+      let logoHTML = '';
+      if (appState.showLogo) {
+        if (appState.logoData) {
+          logoHTML = `<div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl p-[2px] shadow-md shrink-0 bg-gradient-to-tr from-emerald-500 to-teal-400">
+            <img src="${appState.logoData}" class="w-full h-full object-cover rounded-[14px]" alt="Logo">
+          </div>`;
+        } else {
+          const words = (appState.brandName || "ST").trim().split(' ');
+          const initials = words.length > 1 ? (words[0][0] + words[1][0]) : words[0].substring(0, 2);
+          logoHTML = `<div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl p-[2px] shadow-md shrink-0 bg-gradient-to-tr from-emerald-500 to-teal-400">
+            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center font-black text-emerald-400 text-xl tracking-tighter">${initials}</div>
+          </div>`;
+        }
+      }
+
+      // Stats Bar HTML
+      let statsHTML = '';
+      if (appState.showStatsBar) {
+        const statsItems = [];
+        if (appState.showComments) statsItems.push(`<span>💬 ${appState.statComments}</span>`);
+        if (appState.showRetweets) statsItems.push(`<span>🔁 ${appState.statRetweets}</span>`);
+        if (appState.showLikes) statsItems.push(`<span>❤️ ${appState.statLikes}</span>`);
+        if (appState.showViews) statsItems.push(`<span>👁️ ${appState.statViews}</span>`);
+        if (appState.showBookmarks) statsItems.push(`<span>🔖 ${appState.statBookmarks}</span>`);
+        
+        statsHTML = `<div class="flex gap-4 font-mono dir-ltr flex-wrap">${statsItems.join('')}</div>`;
+      }
+
+      const domainHTML = appState.showDomain ? `<span class="text-xs font-mono dir-ltr text-slate-400">${appState.brandDomain}</span>` : '';
+      const subTitleBadgeHTML = appState.showSubTitle ? `<span class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block" style="color:${appState.subTitleTextColor}; background-color:${appState.subTitleBgColor};">${appState.subTitle || '⚡ نکته مهم'}</span>` : '';
+      const flexHeaderDir = appState.headerAlign === 'left' ? 'flex-row-reverse' : 'flex-row';
+
+      // 4. TEMPLATE SPECIFIC RENDERING LOGIC
+      cardElement.style.backgroundColor = appState.cardBgColor;
+      cardElement.style.borderColor = appState.cardBorderColor;
+
+      if (appState.template === 'tweet') {
+        // --- TEMPLATE 1: TWEET / X CARD ---
+        cardElement.className = "w-full max-w-xl rounded-3xl p-6 md:p-8 text-white relative z-10 transition-all border shadow-2xl";
+        cardElement.innerHTML = `
+          <div class="flex items-center justify-between mb-6 ${flexHeaderDir}">
+            <div class="flex items-center gap-3.5">
+              ${logoHTML}
+              <div>
+                <div class="flex items-center gap-1.5">
+                  ${appState.showBrandName ? `<span class="font-bold text-base md:text-lg" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
+                  ${badgeHTML}
+                </div>
+                ${appState.showBrandHandle ? `<span class="text-xs md:text-sm font-mono tracking-wide dir-ltr block" style="color:${appState.brandHandleColor}">${appState.brandHandle}</span>` : ''}
+              </div>
+            </div>
+            <div class="text-slate-400">${platformHTML}</div>
+          </div>
+          ${subTitleBadgeHTML ? `<div class="mb-3">${subTitleBadgeHTML}</div>` : ''}
+          <div class="my-6">
+            <p class="${appState.fontFamily} ${appState.fontSize} leading-relaxed font-semibold whitespace-pre-line" style="color:${appState.textColor}">
+              ${parseHighlights(appState.cardContent)}
+            </p>
+          </div>
+          <div class="border-t border-slate-800/80 pt-4 mt-6 flex items-center justify-between text-slate-400 text-xs md:text-sm">
+            ${statsHTML}
+            ${domainHTML}
+          </div>
+        `;
+
+      } else if (appState.template === 'hook') {
+        // --- TEMPLATE 2: REEL HOOK CARD ---
+        cardElement.className = "w-full max-w-xl rounded-3xl p-6 md:p-8 text-white relative z-10 transition-all border-2 shadow-2xl";
+        cardElement.style.borderColor = appState.highlightColor;
+        cardElement.innerHTML = `
+          <div class="flex items-center justify-between mb-4 ${flexHeaderDir}">
+            ${subTitleBadgeHTML}
+            <div class="text-slate-400">${platformHTML}</div>
+          </div>
+          <div class="my-6">
+            <p class="${appState.fontFamily} text-2xl md:text-3xl leading-snug font-black whitespace-pre-line" style="color:${appState.textColor}">
+              ${parseHighlights(appState.cardContent)}
+            </p>
+          </div>
+          <div class="border-t border-slate-800/80 pt-4 mt-6 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              ${logoHTML}
+              <div>
+                ${appState.showBrandName ? `<span class="font-bold text-sm block" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
+                ${appState.showBrandHandle ? `<span class="text-xs font-mono dir-ltr block" style="color:${appState.brandHandleColor}">${appState.brandHandle}</span>` : ''}
+              </div>
+            </div>
+            ${domainHTML}
+          </div>
+        `;
+
+      } else if (appState.template === 'problem') {
+        // --- TEMPLATE 3: PROBLEM VS SOLUTION CARD ---
+        let problemText = appState.problemText || '';
+        let solutionText = appState.solutionText || '';
+        
+        if (!problemText && !solutionText) {
+          const parts = appState.cardContent.split('---');
+          problemText = parts[0] ? parts[0].trim() : appState.cardContent;
+          solutionText = parts[1] ? parts[1].trim() : 'راهکار اختصاصی استارتیچ...';
+        }
+
+        cardElement.className = "w-full max-w-xl rounded-3xl p-6 text-white relative z-10 transition-all border shadow-2xl space-y-4";
+        cardElement.innerHTML = `
+          <div class="flex items-center justify-between mb-2 ${flexHeaderDir}">
+            <div class="flex items-center gap-2">
+              ${logoHTML}
+              <div>
+                ${appState.showBrandName ? `<span class="font-bold text-sm block" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
+              </div>
+            </div>
+            <div class="text-slate-400">${platformHTML}</div>
+          </div>
+          
+          <!-- Problem Box -->
+          <div class="p-4 rounded-2xl text-sm md:text-base leading-relaxed border border-rose-500/30" style="background-color:${appState.problemBgColor}; color:${appState.textColor}">
+            <div class="text-xs font-bold text-rose-400 mb-1 flex items-center gap-1">❌ مشکـل:</div>
+            ${parseHighlights(problemText)}
+          </div>
+
+          <!-- Solution Box -->
+          <div class="p-4 rounded-2xl text-sm md:text-base leading-relaxed border border-emerald-500/40" style="background-color:${appState.solutionBgColor}; color:${appState.textColor}">
+            <div class="text-xs font-bold text-emerald-400 mb-1 flex items-center gap-1" style="color:${appState.highlightColor}">✅ راهکـار استارتیچ:</div>
+            ${parseHighlights(solutionText)}
+          </div>
+
+          <div class="pt-2 flex items-center justify-between text-xs text-slate-400">
+            ${statsHTML}
+            ${domainHTML}
+          </div>
+        `;
+
+      } else if (appState.template === 'code') {
+        // --- TEMPLATE 4: CODE / TECH TIP CARD ---
+        cardElement.className = "w-full max-w-xl rounded-3xl p-0 overflow-hidden text-white relative z-10 transition-all border shadow-2xl font-mono-code";
+        cardElement.innerHTML = `
+          <!-- Terminal Header Dots -->
+          <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            </div>
+            <span class="text-xs text-slate-400 font-mono">${appState.subTitle || 'starteach.py'}</span>
+            <div class="text-slate-400">${platformHTML}</div>
+          </div>
+
+          <div class="p-6 text-xs md:text-sm leading-relaxed dir-ltr text-left">
+            <pre class="whitespace-pre-line" style="color:${appState.textColor}"><code>${parseHighlights(appState.cardContent)}</code></pre>
+          </div>
+
+          <div class="bg-slate-900/90 px-6 py-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 dir-rtl">
+            <div class="flex items-center gap-2">
+              ${appState.showBrandName ? `<span class="font-bold text-slate-200" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
+              ${badgeHTML}
+            </div>
+            ${domainHTML}
+          </div>
+        `;
+      }
+    }
+
+    function attachEventListeners() {
+      const bindInput = (elem, key) => {
+        if (!elem) return;
+        elem.addEventListener('input', (e) => {
+          appState[key] = e.target.value;
+          saveState();
+          renderPreview();
+        });
+      };
+
+      const bindCheckbox = (elem, key) => {
+        if (!elem) return;
+        elem.addEventListener('change', (e) => {
+          appState[key] = e.target.checked;
+          saveState();
+          renderPreview();
+        });
+      };
+
+      bindInput(brandNameInput, 'brandName');
+      bindInput(brandHandleInput, 'brandHandle');
+      bindInput(brandDomainInput, 'brandDomain');
+      bindInput(platformIconSelect, 'platformIcon');
+      bindInput(verifiedToggle, 'verifiedType');
+      bindInput(headerAlignSelect, 'headerAlign');
+
+      bindInput(cardContentInput, 'cardContent');
+      bindInput(subTitleInput, 'subTitle');
+      bindInput(problemTextInput, 'problemText');
+      bindInput(solutionTextInput, 'solutionText');
+      bindInput(fontFamilySelect, 'fontFamily');
+      bindInput(fontSizeSelect, 'fontSize');
+
+      bindInput(statCommentsInput, 'statComments');
+      bindInput(statRetweetsInput, 'statRetweets');
+      bindInput(statLikesInput, 'statLikes');
+      bindInput(statViewsInput, 'statViews');
+      bindInput(statBookmarksInput, 'statBookmarks');
+
+      bindInput(highlightColorInput, 'highlightColor');
+      bindInput(textColorInput, 'textColor');
+      bindInput(brandNameColorInput, 'brandNameColor');
+      bindInput(brandHandleColorInput, 'brandHandleColor');
+      bindInput(cardBgColorInput, 'cardBgColor');
+      bindInput(cardBorderColorInput, 'cardBorderColor');
+      bindInput(canvasBgColorInput, 'canvasBgColor');
+      bindInput(glowColorInput, 'glowColor');
+      bindInput(subTitleTextColorInput, 'subTitleTextColor');
+      bindInput(subTitleBgColorInput, 'subTitleBgColor');
+      bindInput(problemBgColorInput, 'problemBgColor');
+      bindInput(solutionBgColorInput, 'solutionBgColor');
+
+      bindInput(templateSelect, 'template');
+      bindInput(bgPatternSelect, 'bgPattern');
+      bindInput(aspectRatioSelect, 'aspectRatio');
+
+      bindCheckbox(toggleLogo, 'showLogo');
+      bindCheckbox(toggleBrandName, 'showBrandName');
+      bindCheckbox(toggleBrandHandle, 'showBrandHandle');
+      bindCheckbox(toggleSubTitle, 'showSubTitle');
+      bindCheckbox(toggleBadge, 'showBadge');
+      bindCheckbox(togglePlatformIcon, 'showPlatformIcon');
+      bindCheckbox(toggleDomain, 'showDomain');
+      bindCheckbox(toggleStatsBar, 'showStatsBar');
+      bindCheckbox(toggleComments, 'showComments');
+      bindCheckbox(toggleRetweets, 'showRetweets');
+      bindCheckbox(toggleLikes, 'showLikes');
+      bindCheckbox(toggleViews, 'showViews');
+      bindCheckbox(toggleBookmarks, 'showBookmarks');
+
+      // Scenario quick fill
+      scenarioSelect.addEventListener('change', (e) => {
+        const key = e.target.value;
+        if (SCENARIOS[key]) {
+          appState = { ...appState, ...SCENARIOS[key] };
+          saveState();
+          syncControlsFromState();
+          renderPreview();
+          showToast("سناریو بارگذاری شد!");
+        }
+      });
+
+      // Preview Zoom/Scale
+      previewScaleSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (val === 'fit') {
+          previewWrapper.style.transform = 'scale(1)';
+        } else {
+          previewWrapper.style.transform = `scale(${val})`;
+        }
+      });
+
+      // Logo File Upload
+      logoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            appState.logoData = evt.target.result;
+            saveState();
+            syncControlsFromState();
+            renderPreview();
+            showToast("تصویر لوگو بارگذاری شد");
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      removeLogoBtn.addEventListener('click', () => {
+        appState.logoData = null;
+        logoInput.value = '';
+        saveState();
+        syncControlsFromState();
+        renderPreview();
+        showToast("تصویر لوگو حذف شد");
+      });
+
+      // Mobile Tab Switching
+      const mobileTabBtns = document.querySelectorAll('.mobile-tab-btn');
+      const tabPanels = document.querySelectorAll('.tab-panel');
+
+      mobileTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          mobileTabBtns.forEach(b => {
+            b.classList.remove('active-tab', 'bg-emerald-500/20', 'text-emerald-400', 'font-bold');
+            b.classList.add('text-slate-400');
+          });
+          btn.classList.add('active-tab', 'bg-emerald-500/20', 'text-emerald-400', 'font-bold');
+
+          const targetTab = btn.getAttribute('data-tab');
+          tabPanels.forEach(panel => {
+            if (panel.id === targetTab) {
+              panel.classList.remove('hidden');
+            } else {
+              panel.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // Modal Handlers
+      const resetModal = document.getElementById('resetModal');
+      document.getElementById('openResetModalBtn').addEventListener('click', () => {
+        resetModal.classList.remove('hidden');
+      });
+      document.getElementById('cancelResetBtn').addEventListener('click', () => {
+        resetModal.classList.add('hidden');
+      });
+      document.getElementById('confirmResetBtn').addEventListener('click', () => {
+        localStorage.removeItem('starteach_studio_pro_v5');
+        appState = { ...DEFAULT_CONFIG };
+        syncControlsFromState();
+        renderPreview();
+        resetModal.classList.add('hidden');
+        showToast("تنظیمات کارخانه بازیابی شد");
+      });
+
+      document.getElementById('exportBtn').addEventListener('click', exportPNG);
+    }
+
+    async function exportPNG() {
+      const exportBtn = document.getElementById('exportBtn');
+      const originalText = exportBtn.innerHTML;
+      
+      try {
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = `
+          <svg class="w-4 h-4 animate-spin text-slate-950" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <span>پردازش...</span>
+        `;
+
+        const canvas = await html2canvas(exportTarget, {
+          scale: 3.0,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: null,
+          logging: false
+        });
+
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.download = `starteach-card-${Date.now()}.png`;
+        link.href = image;
+        link.click();
+        showToast("تصویر با کیفیت عالی دانلود شد!");
+
+      } catch (err) {
+        console.error("Export error:", err);
+        showToast("خطا در خروجی گرفتن!");
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.innerHTML = originalText;
+      }
+    }
+
+    // INITIALIZATION ON DOM READY
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      syncControlsFromState();
+      renderPreview();
+      attachEventListeners();
+    });
+  </script>
+</body>
 </html>
