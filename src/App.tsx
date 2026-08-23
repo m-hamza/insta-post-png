@@ -1,396 +1,346 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Copy, Download, Loader2, Palette, PenLine, RotateCcw, Share2, User } from "lucide-react";
-
-import type { CardConfig, RatioId } from "./lib/config";
-import { DEFAULT_CONFIG, RATIOS, TEMPLATES } from "./lib/config";
-import { clearConfig, faDigits, fileToLogoDataUrl, loadConfig, saveConfig } from "./lib/utils";
+import { Copy, Download, Languages, RotateCcw, Sparkles } from "lucide-react";
+import type { CardConfig } from "./lib/config";
+import { DEFAULT_CONFIG, RATIOS } from "./lib/config";
 import { captureCard, copyBlob, downloadBlob, shareBlob } from "./lib/exporter";
-
+import { clearConfig, fileToLogoDataUrl, loadConfig, saveConfig } from "./lib/utils";
+import { I18nProvider, IDEA_TEXTS, useI18n } from "./lib/i18n";
+import CardCanvas from "./components/CardCanvas";
 import PreviewStage from "./components/PreviewStage";
 import { BrandPanel, ContentPanel, StylePanel } from "./components/Panels";
-import type { Notify, Patch } from "./components/Panels";
-import { cx, Sheet, Toasts } from "./components/ui";
-import type { ToastItem } from "./components/ui";
+import { Sheet, Toasts, cx, type ToastItem } from "./components/ui";
 
-type TabId = "content" | "style" | "brand";
+type Tab = "preview" | "content" | "style" | "brand";
 
-const TABS: { id: TabId; label: string; icon: typeof PenLine }[] = [
-  { id: "content", label: "محتوا", icon: PenLine },
-  { id: "style", label: "ظاهر", icon: Palette },
-  { id: "brand", label: "برند", icon: User },
-];
-
-const RATIO_GLYPH: Record<RatioId, string> = {
-  "9:16": "h-4 w-2.5",
-  "1:1": "h-3 w-3",
-  "16:9": "h-2.5 w-4",
-};
-
-export default function App() {
-  const [config, setConfig] = useState<CardConfig>(loadConfig);
-  const [tab, setTab] = useState<TabId>("content");
-  const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const [sheetOpen, setSheetOpen] = useState(false);
+/* ================= پوسته‌ی اصلی (داخل Provider) ================= */
+function Studio({
+  config,
+  setConfig,
+}: {
+  config: CardConfig;
+  setConfig: Dispatch<SetStateAction<CardConfig>>;
+}) {
+  const { t, dir, lang } = useI18n();
+  const [tab, setTab] = useState<Tab>("preview");
   const [exporting, setExporting] = useState(false);
-  const [saveFlash, setSaveFlash] = useState(0);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [savedTick, setSavedTick] = useState(0);
+  const exportNode = useRef<HTMLDivElement | null>(null);
+  const idRef = useRef(1);
 
-  const stageRef = useRef<HTMLDivElement>(null);
-  const busy = useRef(false);
-  const toastId = useRef(0);
-  const firstRun = useRef(true);
+  const patch = (p: Partial<CardConfig>) => setConfig((c) => ({ ...c, ...p }));
 
-  const patch: Patch = useCallback((p) => setConfig((c) => ({ ...c, ...p })), []);
+  const pushToast = (kind: ToastItem["kind"], key: string) => {
+    const id = idRef.current++;
+    setToasts((ts) => [...ts.slice(-2), { id, kind, key }]);
+    window.setTimeout(() => setToasts((ts) => ts.filter((x) => x.id !== id)), 3200);
+  };
 
-  const notify: Notify = useCallback((kind, text) => {
-    const id = ++toastId.current;
-    setToasts((t) => [...t.slice(-2), { id, kind, text }]);
-    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2700);
-  }, []);
-
-  /* ذخیره‌ی خودکار با تأخیر */
   useEffect(() => {
-    if (firstRun.current) {
-      firstRun.current = false;
-      return;
+    if (!saveConfig(config)) {
+      pushToast("error", "toast.storageFull");
+    } else {
+      setSavedTick((n) => n + 1);
     }
-    const t = window.setTimeout(() => {
-      const ok = saveConfig(config);
-      if (ok) setSaveFlash((f) => f + 1);
-      else notify("error", "حافظه‌ی مرورگر پر است؛ لوگوی سبک‌تری انتخاب کن");
-    }, 400);
-    return () => window.clearTimeout(t);
-  }, [config, notify]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config]);
 
-  const filenameFor = () => `starteach-${config.template}-${config.ratio.replace(":", "x")}.png`;
-
-  async function handleDownload() {
-    if (busy.current || !stageRef.current) return;
-    busy.current = true;
-    setExporting(true);
-    try {
-      const blob = await captureCard(stageRef.current);
-      downloadBlob(blob, filenameFor());
-      const { w, h } = RATIOS[config.ratio];
-      notify("success", `تصویر ${faDigits(w)}×${faDigits(h)} دانلود شد`);
-    } catch (e) {
-      console.error(e);
-      notify("error", "خطا در ساخت تصویر؛ دوباره تلاش کن");
-    } finally {
-      busy.current = false;
-      setExporting(false);
-    }
-  }
-
-  async function handleShare() {
-    if (busy.current || !stageRef.current) return;
-    busy.current = true;
-    setExporting(true);
-    try {
-      const blob = await captureCard(stageRef.current);
-      const res = await shareBlob(blob, filenameFor());
-      if (res === "unsupported") {
-        downloadBlob(blob, filenameFor());
-        notify("info", "اشتراک‌گذاری در دسترس نبود؛ فایل دانلود شد");
-      }
-    } catch (e) {
-      console.error(e);
-      notify("error", "خطا در ساخت تصویر؛ دوباره تلاش کن");
-    } finally {
-      busy.current = false;
-      setExporting(false);
-    }
-  }
-
-  async function handleCopy() {
-    if (busy.current || !stageRef.current) return;
-    busy.current = true;
-    setExporting(true);
-    try {
-      const blob = await captureCard(stageRef.current);
-      const ok = await copyBlob(blob);
-      notify(ok ? "success" : "error", ok ? "تصویر در کلیپ‌بورد کپی شد" : "کپی تصویر در این مرورگر پشتیبانی نمی‌شود");
-    } catch (e) {
-      console.error(e);
-      notify("error", "خطا در کپی تصویر");
-    } finally {
-      busy.current = false;
-      setExporting(false);
-    }
-  }
-
-  async function handleLogoFile(file: File) {
+  const onLogoFile = async (file: File | null) => {
+    if (!file) return;
     try {
       const data = await fileToLogoDataUrl(file);
       patch({ logoData: data });
-      notify("success", "لوگو فشرده و ذخیره شد");
-    } catch {
-      notify("error", "فایل انتخابی یک تصویر معتبر نیست");
+      pushToast("success", "toast.logoSaved");
+    } catch (e) {
+      pushToast("error", (e as Error).message === "not-image" ? "toast.notImage" : "toast.badImage");
     }
-  }
+  };
 
-  function handleReset() {
+  const doExport = async () => {
+    if (!exportNode.current || exporting) return;
+    setExporting(true);
+    try {
+      const blob = await captureCard(exportNode.current);
+      const r = RATIOS[config.ratio];
+      const filename = `starteach-${config.template}-${r.w}x${r.h}-${Date.now()}.png`;
+      const shared = await shareBlob(blob, filename);
+      if (shared === "unsupported") {
+        downloadBlob(blob, filename);
+        pushToast("success", "toast.downloaded");
+      }
+    } catch {
+      pushToast("error", "toast.badImage");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const doCopy = async () => {
+    if (!exportNode.current) return;
+    const blob = await captureCard(exportNode.current);
+    const ok = await copyBlob(blob);
+    pushToast(ok ? "success" : "error", ok ? "toast.copied" : "toast.copyFail");
+  };
+
+  const doReset = () => {
     clearConfig();
-    setConfig({ ...DEFAULT_CONFIG, stats: { ...DEFAULT_CONFIG.stats } });
-    setSheetOpen(false);
-    notify("success", "همه‌چیز به تنظیمات اولیه برگشت");
-  }
+    setConfig({ ...DEFAULT_CONFIG, lang });
+    setResetOpen(false);
+    pushToast("success", "toast.reset");
+  };
 
-  const { w, h } = RATIOS[config.ratio];
-  const tabIdx = TABS.findIndex((t) => t.id === tab);
+  const addTemplateIdea = () => {
+    const list = IDEA_TEXTS[lang][config.template] ?? IDEA_TEXTS[lang].tweet;
+    patch({ content: list[0] });
+  };
+
+  const ratio = RATIOS[config.ratio];
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: "preview", label: t("tab.preview") },
+    { id: "content", label: t("tab.content") },
+    { id: "style", label: t("tab.style") },
+    { id: "brand", label: t("tab.brand") },
+  ];
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div dir={dir} className="flex min-h-dvh flex-col">
       <Toasts items={toasts} />
 
-      {/* ============ هدر ============ */}
-      <header className="sticky top-0 z-50 border-b border-ink-800 bg-ink-950/85 backdrop-blur-md">
-        <div className="mx-auto flex h-14 w-full max-w-[1180px] items-center justify-between gap-3 px-4 lg:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-xl bg-brand-500 shadow-[0_8px_24px_-8px_rgba(16,185,129,0.7)]">
-              <span className="font-display text-[22px] leading-none text-ink-950">س</span>
-            </div>
-            <div className="min-w-0">
-              <h1 className="flex items-center gap-2 font-display text-lg leading-6 text-mist-100">
-                استودیو استارتیچ
-                <span className="rounded-full border border-brand-500/25 bg-brand-500/10 px-2 py-0.5 font-code text-[10px] font-semibold text-brand-300" dir="ltr">
-                  v3.0
-                </span>
-              </h1>
-              <p className="hidden truncate text-[11px] text-mist-500 sm:block">
-                کارت و کاور ریلز برای شبکه‌های اجتماعی — خروجی بومی {faDigits(w)}×{faDigits(h)}
-              </p>
+      {/* ---------- هدر ---------- */}
+      <header className="sticky top-0 z-40 border-b border-ink-800 bg-ink-950/85 backdrop-blur-md">
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-2.5 px-3 md:h-16 md:px-5">
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl shadow-lg"
+            style={{ background: config.accent, boxShadow: `0 6px 22px -6px ${config.accent}` }}
+          >
+            <span className="font-display text-[15px] leading-none text-ink-950">ST</span>
+          </div>
+          <div className="min-w-0">
+            <h1 className="font-display truncate text-[17px] leading-6 text-mist-100 md:text-lg">
+              {lang === "fa" ? "استودیو کارت استارتیچ" : "Starteach Card Studio"}
+            </h1>
+            <div className="flex items-center gap-1.5">
+              <span className="pulse-dot h-1.5 w-1.5 rounded-full" style={{ background: config.accent }} />
+              <span className="font-code text-[10px] text-mist-500">{t("app.version")}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {saveFlash > 0 && (
-              <span key={saveFlash} className="saved-flash hidden items-center gap-1 text-[11px] font-semibold text-brand-400 sm:flex">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                ذخیره شد
-              </span>
-            )}
-
-            <div className="hidden items-center gap-2 lg:flex">
-              <button
-                type="button"
-                onClick={handleCopy}
-                title="کپی تصویر"
-                className="rounded-xl border border-ink-700 bg-ink-800 p-2.5 text-mist-300 transition hover:border-ink-600 hover:text-mist-100 active:scale-95"
-              >
-                <Copy className="h-4.5 w-4.5" />
-              </button>
-              <button
-                type="button"
-                onClick={handleShare}
-                className="flex h-10 items-center gap-2 rounded-xl border border-ink-700 bg-ink-800 px-4 text-[13px] font-bold text-mist-200 transition hover:border-ink-600 active:scale-95"
-              >
-                <Share2 className="h-4 w-4" />
-                اشتراک‌گذاری
-              </button>
-              <button
-                type="button"
-                onClick={handleDownload}
-                disabled={exporting}
-                className="flex h-10 items-center gap-2 rounded-xl bg-brand-500 px-5 text-[13px] font-extrabold text-ink-950 shadow-[0_10px_28px_-10px_rgba(16,185,129,0.65)] transition hover:bg-brand-400 active:scale-95 disabled:opacity-70"
-              >
-                {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                دانلود PNG
-              </button>
-            </div>
+          <div className="ms-auto flex items-center gap-1.5 md:gap-2">
+            {/* کلید تغییر زبان */}
+            <button
+              type="button"
+              onClick={() => patch({ lang: lang === "fa" ? "en" : "fa" })}
+              title={t("lang.aria")}
+              className="flex h-9 items-center gap-1.5 rounded-xl border border-ink-700 bg-ink-900 px-2.5 text-[12px] font-extrabold text-mist-300 transition hover:border-ink-600 hover:text-mist-100 active:scale-95"
+            >
+              <Languages className="h-4 w-4 text-skyx-400" />
+              <span className="font-code">{lang === "fa" ? "EN" : "فا"}</span>
+            </button>
 
             <button
               type="button"
-              onClick={() => setSheetOpen(true)}
-              title="بازنشانی تنظیمات"
-              className="rounded-xl border border-ink-700 bg-ink-800 p-2.5 text-mist-400 transition hover:border-rosex-400/50 hover:text-rosex-400 active:scale-95"
+              onClick={() => setResetOpen(true)}
+              title={t("reset.aria")}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-700 bg-ink-900 text-mist-400 transition hover:border-ink-600 hover:text-mist-100 active:scale-95"
             >
-              <RotateCcw className="h-4.5 w-4.5" />
+              <RotateCcw className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={doCopy}
+              title={t("toast.copied")}
+              className="hidden h-9 w-9 items-center justify-center rounded-xl border border-ink-700 bg-ink-900 text-mist-400 transition hover:border-ink-600 hover:text-mist-100 active:scale-95 sm:flex"
+            >
+              <Copy className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={doExport}
+              disabled={exporting}
+              className="hidden h-9 items-center gap-1.5 rounded-xl px-3.5 text-[13px] font-extrabold text-ink-950 transition active:scale-95 disabled:opacity-60 md:flex"
+              style={{ background: config.accent, boxShadow: `0 8px 24px -8px ${config.accent}` }}
+            >
+              <Download className="h-4 w-4" />
+              {t("btn.download")}
             </button>
           </div>
         </div>
       </header>
 
-      {/* ============ بدنه ============ */}
-      <main className="mx-auto w-full max-w-[1180px] flex-1 px-4 pb-32 lg:grid lg:grid-cols-[minmax(0,1fr)_430px] lg:items-start lg:gap-7 lg:px-6 lg:pb-14 lg:pt-6">
-        {/* --- پیش‌نمایش --- */}
-        <section className="-mx-4 overflow-hidden border-b border-ink-800 bg-ink-900/60 lg:mx-0 lg:sticky lg:top-20 lg:rounded-2xl lg:border lg:shadow-2xl">
-          {/* نوار ابزار پیش‌نمایش */}
-          <div className="flex items-center justify-between gap-2 border-b border-ink-800 px-4 py-3">
-            <span className="flex items-center gap-2 text-xs font-bold text-mist-300">
-              <span className="pulse-dot h-2 w-2 rounded-full bg-brand-400" />
-              پیش‌نمایش زنده
-              <span className="hidden text-[11px] font-semibold text-mist-500 sm:inline">
-                — قالب «{TEMPLATES[config.template].label}»
-              </span>
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="rounded-lg border border-ink-700 bg-ink-800 px-2.5 py-1 font-code text-[11px] text-mist-300" dir="ltr">
-                {w}×{h}
-              </span>
-              <button
-                type="button"
-                onClick={handleCopy}
-                title="کپی تصویر در کلیپ‌بورد"
-                className="rounded-lg border border-ink-700 bg-ink-800 p-1.5 text-mist-400 transition hover:text-mist-100 active:scale-95 lg:hidden"
-              >
-                <Copy className="h-4 w-4" />
-              </button>
-            </span>
-          </div>
-
-          {/* صحنه */}
-          <div
-            className="relative px-4 py-5"
-            style={{
-              backgroundImage: "radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1.5px)",
-              backgroundSize: "19px 19px",
-            }}
-          >
-            <PreviewStage config={config} stageRef={stageRef} className="h-[44dvh] min-h-[300px] max-h-[430px] lg:h-[500px] lg:max-h-none" />
-          </div>
-
-          {/* انتخاب سریع ابعاد */}
-          <div className="flex items-center gap-2 overflow-x-auto border-t border-ink-800 px-4 py-3 no-scrollbar">
-            {(Object.keys(RATIOS) as RatioId[]).map((id) => {
-              const r = RATIOS[id];
-              const active = config.ratio === id;
-              return (
+      {/* ---------- بدنه ---------- */}
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-0 pt-0 pb-40 md:grid md:grid-cols-[400px_1fr] md:items-start md:gap-5 md:px-5 md:pb-10 md:pt-5 lg:grid-cols-[430px_1fr]">
+        {/* پنل تنظیمات: بعد از پیش‌نمایش در موبایل، اول در دسکتاپ */}
+        <aside className="order-2 border-t border-ink-800 bg-ink-900/40 px-4 py-4 md:order-1 md:rounded-2xl md:border md:px-4 md:py-5">
+          <div className="sticky top-16 hidden md:block">
+            <div className="mb-4 flex rounded-xl border border-ink-700 bg-ink-900 p-1">
+              {tabs.slice(1).map((tb) => (
                 <button
-                  key={id}
+                  key={tb.id}
                   type="button"
-                  onClick={() => patch({ ratio: id })}
+                  onClick={() => setTab(tb.id)}
                   className={cx(
-                    "flex shrink-0 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold transition-all active:scale-95",
-                    active
-                      ? "border-brand-500/70 bg-brand-500/10 text-brand-300"
-                      : "border-ink-700 bg-ink-900 text-mist-400 hover:border-ink-600 hover:text-mist-200",
+                    "flex-1 rounded-lg py-2 text-[13px] font-bold transition-all duration-200",
+                    tab === tb.id ? "bg-ink-600 text-brand-300 shadow-sm" : "text-mist-500 hover:text-mist-300",
                   )}
                 >
-                  <span className={cx("rounded-[3px] border-[1.5px] border-current", RATIO_GLYPH[id])} />
-                  {r.label}
-                  <span className="hidden font-medium text-mist-500 sm:inline">· {r.use}</span>
+                  {tb.label}
                 </button>
-              );
-            })}
-            <span className="ms-auto hidden shrink-0 font-code text-[10.5px] text-mist-500 lg:inline" dir="ltr">
-              PNG · {w}×{h}
-            </span>
-          </div>
-        </section>
-
-        {/* --- کنترل‌ها --- */}
-        <section className="min-w-0 lg:pt-0">
-          {/* نوار تب‌ها */}
-          <div className="sticky top-14 z-40 -mx-4 border-b border-ink-800 bg-ink-950/92 px-4 backdrop-blur-md lg:sticky lg:top-20 lg:z-30 lg:mx-0 lg:rounded-t-2xl lg:border lg:border-b-0 lg:bg-ink-900/80">
-            <div className="relative flex">
-              {TABS.map((t) => {
-                const Icon = t.icon;
-                const active = tab === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setTab(t.id)}
-                    className={cx(
-                      "relative z-10 flex h-12 flex-1 items-center justify-center gap-2 text-[13.5px] font-extrabold transition-colors",
-                      active ? "text-brand-300" : "text-mist-500 hover:text-mist-300",
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {t.label}
-                  </button>
-                );
-              })}
-              <span
-                aria-hidden
-                className="absolute bottom-0 h-[2.5px] rounded-full bg-brand-400 transition-transform duration-300 ease-out"
-                style={{ width: `${100 / TABS.length}%`, right: 0, transform: `translateX(${-tabIdx * 100}%)` }}
-              />
+              ))}
+            </div>
+            <div className="scrollbar-slim max-h-[calc(100dvh-10rem)] overflow-y-auto pe-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                >
+                  {tab === "content" && <ContentPanel config={config} setConfig={patch} />}
+                  {tab === "style" && <StylePanel config={config} setConfig={patch} />}
+                  {tab === "brand" && <BrandPanel config={config} setConfig={patch} onLogoFile={onLogoFile} />}
+                  {tab === "preview" && <ContentPanel config={config} setConfig={patch} />}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 
-          <div className="-mx-4 border-b border-ink-800 bg-ink-900/40 px-4 py-4 lg:mx-0 lg:rounded-b-2xl lg:border lg:px-5 lg:py-5">
-            <AnimatePresence mode="wait" initial={false}>
+          {/* تب‌های موبایل */}
+          <div className="md:hidden">
+            <div className="mb-4 flex rounded-xl border border-ink-700 bg-ink-900 p-1">
+              {tabs.slice(1).map((tb) => (
+                <button
+                  key={tb.id}
+                  type="button"
+                  onClick={() => setTab(tb.id)}
+                  className={cx(
+                    "flex-1 rounded-lg py-2 text-[13px] font-bold transition-all duration-200",
+                    tab === tb.id ? "bg-ink-600 text-brand-300 shadow-sm" : "text-mist-500 hover:text-mist-300",
+                  )}
+                >
+                  {tb.label}
+                </button>
+              ))}
+            </div>
+            <AnimatePresence mode="wait">
               <motion.div
                 key={tab}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.16, ease: "easeOut" }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
               >
-                {tab === "content" && <ContentPanel config={config} patch={patch} notify={notify} />}
-                {tab === "style" && <StylePanel config={config} patch={patch} />}
-                {tab === "brand" &&
-                  (
-                    <BrandPanel
-                      config={config}
-                      patch={patch}
-                      onLogoFile={handleLogoFile}
-                      onRemoveLogo={() => {
-                        patch({ logoData: null });
-                        notify("info", "لوگو حذف شد؛ حروف اختصاری جایگزین می‌شود");
-                      }}
-                    />
-                  )}
+                {tab === "content" && <ContentPanel config={config} setConfig={patch} />}
+                {tab === "style" && <StylePanel config={config} setConfig={patch} />}
+                {tab === "brand" && <BrandPanel config={config} setConfig={patch} onLogoFile={onLogoFile} />}
+                {tab === "preview" && <ContentPanel config={config} setConfig={patch} />}
               </motion.div>
             </AnimatePresence>
+          </div>
+        </aside>
+
+        {/* پیش‌نمایش: اول در موبایل */}
+        <section className="order-1 md:order-2">
+          <div className="-mx-0 border-b border-ink-800 bg-ink-900/40 px-4 py-4 md:mx-0 md:rounded-2xl md:border md:px-5 md:py-5">
+            <PreviewStage ratioId={config.ratio} nodeRef={exportNode}>
+              <CardCanvas config={config} />
+            </PreviewStage>
+            <div className="mt-3 flex items-center justify-between">
+              <span key={savedTick} className={savedTick ? "saved-flash text-[11px] font-semibold text-brand-400" : "text-[11px] text-transparent"}>
+                {t("saved")}
+              </span>
+              <span className="font-code text-[11px] text-mist-500" dir="ltr">
+                {ratio.w}×{ratio.h} px
+              </span>
+            </div>
           </div>
         </section>
       </main>
 
-      {/* ============ نوار اقدام موبایل ============ */}
-      <div
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-700 bg-ink-950/95 px-4 pt-3 backdrop-blur-md lg:hidden"
-        style={{ paddingBottom: "calc(0.8rem + env(safe-area-inset-bottom))" }}
-      >
-        <div className="mx-auto flex max-w-md gap-2.5">
+      {/* ---------- نوار اقدام پایین (موبایل) ---------- */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink-800 bg-ink-950/92 backdrop-blur-md md:hidden">
+        <div className="flex gap-2.5 px-3 pt-2.5" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}>
           <button
             type="button"
-            onClick={handleShare}
+            onClick={doExport}
             disabled={exporting}
-            className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl border border-ink-600 bg-ink-800 px-4 text-sm font-bold text-mist-200 transition active:scale-95 disabled:opacity-60"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-[15px] font-extrabold text-ink-950 transition active:scale-[0.97] disabled:opacity-60"
+            style={{ background: config.accent, boxShadow: `0 10px 30px -10px ${config.accent}` }}
           >
-            <Share2 className="h-4.5 w-4.5" />
-            اشتراک
+            {exporting ? (
+              <span className="h-4.5 w-4.5 animate-spin rounded-full border-2 border-ink-950/30 border-t-ink-950" />
+            ) : (
+              <Download className="h-5 w-5" />
+            )}
+            {t("btn.download")}
           </button>
           <button
             type="button"
-            onClick={handleDownload}
-            disabled={exporting}
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-brand-500 text-[15px] font-extrabold text-ink-950 shadow-[0_12px_32px_-10px_rgba(16,185,129,0.65)] transition active:scale-[0.98] disabled:opacity-70"
+            onClick={doCopy}
+            className="flex h-12 w-12 items-center justify-center rounded-xl border border-ink-700 bg-ink-900 text-mist-300 transition active:scale-95"
+            aria-label={t("toast.copied")}
           >
-            {exporting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
-            {exporting ? "در حال ساخت تصویر…" : "دانلود خروجی PNG"}
+            <Copy className="h-5 w-5" />
           </button>
         </div>
       </div>
 
-      {/* ============ شیت بازنشانی ============ */}
-      <Sheet open={sheetOpen} onClose={() => setSheetOpen(false)} title="بازنشانی استودیو">
-        <p className="mb-5 text-sm leading-7 text-mist-400">
-          همه‌ی تنظیمات، متن کارت و لوگوی ذخیره‌شده پاک می‌شود و استودیو به حالت اولیه برمی‌گردد. این کار قابل بازگشت
-          نیست.
-        </p>
-        <div className="flex gap-2.5">
+      {/* ---------- شیت بازنشانی ---------- */}
+      <Sheet open={resetOpen} onClose={() => setResetOpen(false)} title={t("reset.title")}>
+        <p className="text-sm leading-7 text-mist-300">{t("reset.body")}</p>
+        <div className="mt-5 flex gap-2.5">
           <button
             type="button"
-            onClick={() => setSheetOpen(false)}
-            className="h-12 flex-1 rounded-xl border border-ink-600 bg-ink-800 text-sm font-bold text-mist-200 transition hover:bg-ink-700 active:scale-95"
+            onClick={() => setResetOpen(false)}
+            className="h-11 flex-1 rounded-xl border border-ink-600 bg-ink-800 text-sm font-bold text-mist-200 transition hover:bg-ink-700 active:scale-[0.98]"
           >
-            انصراف
+            {t("reset.cancel")}
           </button>
           <button
             type="button"
-            onClick={handleReset}
-            className="h-12 flex-1 rounded-xl bg-rosex-400 text-sm font-extrabold text-ink-950 transition hover:brightness-110 active:scale-95"
+            onClick={doReset}
+            className="h-11 flex-1 rounded-xl bg-rosex-400 text-sm font-extrabold text-ink-950 transition hover:brightness-110 active:scale-[0.98]"
           >
-            بله، بازنشانی کن
+            {t("reset.confirm")}
           </button>
         </div>
       </Sheet>
+
+      {/* دکمه‌ی شناور تغییر سریع متن (موبایل) */}
+      {tab !== "preview" && (
+        <button
+          type="button"
+          onClick={addTemplateIdea}
+          className="fixed bottom-24 end-4 z-30 flex h-11 items-center gap-1.5 rounded-full border border-ink-600 bg-ink-800/95 px-4 text-[12px] font-bold text-mist-200 shadow-xl backdrop-blur transition hover:border-brand-500/50 hover:text-brand-300 active:scale-95 md:hidden"
+        >
+          <Sparkles className="h-3.5 w-3.5 text-brand-400" />
+          {lang === "fa" ? "یه ایده بده" : "Inspire me"}
+        </button>
+      )}
     </div>
+  );
+}
+
+/* ================= ریشه با Provider ================= */
+export default function App() {
+  const [config, setConfig] = useState<CardConfig>(loadConfig);
+
+  useEffect(() => {
+    const el = document.documentElement;
+    el.lang = config.lang;
+    el.dir = config.lang === "fa" ? "rtl" : "ltr";
+    document.title =
+      config.lang === "fa" ? "استودیو کارت و ریلز استارتیچ" : "Starteach Card & Reels Studio";
+  }, [config.lang]);
+
+  return (
+    <I18nProvider lang={config.lang}>
+      <Studio config={config} setConfig={setConfig} />
+    </I18nProvider>
   );
 }

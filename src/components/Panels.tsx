@@ -1,201 +1,292 @@
-import { useRef } from "react";
-import type { CardConfig, FontId, SizeId, TemplateId, VerifiedId } from "../lib/config";
-import { ACCENT_PRESETS, BGS, FONTS, IDEAS, SIZES, TEMPLATES } from "../lib/config";
-import { faDigits, hexA } from "../lib/utils";
-import { VerifiedSeal } from "./CardCanvas";
-import { cx, Field, PanelSection, Segmented, TextInput, ToggleSwitch } from "./ui";
+import type { CardConfig } from "../lib/config";
+import {
+  BG_IDS,
+  FONTS,
+  FONT_IDS,
+  PRESET_ACCENTS,
+  RATIO_IDS,
+  RATIOS,
+  SIZE_IDS,
+  TEMPLATE_IDS,
+  VERIFIED_IDS,
+} from "../lib/config";
+import { hexA } from "../lib/utils";
+import { IDEA_TEXTS, PLACEHOLDERS, useI18n } from "../lib/i18n";
 import {
   AlignLeft,
   AlignRight,
-  Check,
+  BookmarkPlus,
+  Code2,
+  Grid3x3,
+  Hash,
+  Heart,
   ImagePlus,
-  LayoutTemplate,
-  MessageCircle,
+  MessagesSquare,
+  MonitorPlay,
+  Paintbrush,
   Palette,
-  PenLine,
+  RectangleHorizontal,
+  Repeat2,
   Sparkles,
+  Split,
   Trash2,
   Type,
-  User,
-  Wallpaper,
+  UserRound,
 } from "lucide-react";
+import { PanelSection, Field, TextInput, Segmented, ToggleSwitch, cx } from "./ui";
+import { Highlight, VerifiedSeal } from "./CardCanvas";
 
-export type Patch = (p: Partial<CardConfig>) => void;
-export type Notify = (kind: "success" | "error" | "info", text: string) => void;
+type SetConfig = (patch: Partial<CardConfig>) => void;
 
-function checkColorOn(hex: string) {
-  const h = hex.replace("#", "");
-  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
-  const n = parseInt(full, 16);
-  if (Number.isNaN(n)) return "#fff";
-  const l = (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
-  return l > 0.62 ? "#0a0f16" : "#ffffff";
-}
-
-/* ================= گالری قالب‌ها ================= */
-
-function Bar({ w, c }: { w: string; c: string }) {
-  return <div style={{ height: 6, borderRadius: 4, width: w, background: c }} />;
-}
-
-function TemplateThumb({ id, accent }: { id: TemplateId; accent: string }) {
-  const ink = "#26374a";
-  const soft = "#1b2735";
-  if (id === "tweet")
-    return (
-      <div className="flex h-full flex-col justify-between rounded-lg border border-ink-600 bg-ink-800 p-2">
-        <div className="flex items-center gap-1.5">
-          <span className="h-3.5 w-3.5 shrink-0 rounded-full" style={{ background: accent }} />
-          <div className="flex-1 space-y-1">
-            <Bar w="70%" c={ink} />
-            <Bar w="45%" c={soft} />
-          </div>
-        </div>
-        <div className="space-y-1">
-          <Bar w="100%" c={ink} />
-          <Bar w="86%" c={ink} />
-          <Bar w="52%" c={accent} />
-        </div>
-        <div className="flex gap-1.5 border-t border-ink-600 pt-1.5">
-          <Bar w="16%" c={soft} />
-          <Bar w="16%" c={soft} />
-          <Bar w="16%" c={soft} />
-        </div>
-      </div>
-    );
-  if (id === "hook")
-    return (
-      <div
-        className="relative flex h-full flex-col justify-center gap-1.5 overflow-hidden rounded-lg border border-ink-600 p-2"
-        style={{ background: `linear-gradient(150deg, #101722, ${hexA(accent, 0.16)})` }}
-      >
-        <span className="absolute -top-2.5 left-0 font-display text-2xl leading-none" style={{ color: hexA(accent, 0.5) }}>
-          «
-        </span>
-        <Bar w="92%" c={ink} />
-        <Bar w="76%" c={ink} />
-        <Bar w="55%" c={accent} />
-        <div className="mt-1 flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full" style={{ background: accent }} />
-          <Bar w="34%" c={soft} />
-        </div>
-      </div>
-    );
-  if (id === "problem")
-    return (
-      <div className="flex h-full flex-col justify-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 p-2">
-        <div className="space-y-1 rounded-md border border-rosex-400/50 bg-rosex-400/10 p-1.5">
-          <Bar w="70%" c="#5d3a44" />
-          <Bar w="50%" c="#4a2e37" />
-        </div>
-        <span className="mx-auto block h-2.5 w-2.5 rounded-full" style={{ background: accent }} />
-        <div className="space-y-1 rounded-md border p-1.5" style={{ borderColor: hexA(accent, 0.5), background: hexA(accent, 0.1) }}>
-          <Bar w="76%" c={ink} />
-          <Bar w="54%" c={ink} />
-        </div>
-      </div>
-    );
+/* ---------- قالب‌ها ---------- */
+const TPL_META: Record<string, { icon: typeof MessageCircleIcon; sample: string }> = {
+  tweet: { icon: MessageCircleIcon, sample: "متن کارت با هایلایت *رنگی*…" },
+  hook: { icon: MegaphoneIcon, sample: "*تیتر* درشت و کوبنده" },
+  problem: { icon: ScaleIcon, sample: "مشکل ← *راهکار*" },
+  code: { icon: TerminalIcon, sample: "const tip = 'code';" },
+};
+function MessageCircleIcon({ className = "" }: { className?: string }) {
   return (
-    <div className="flex h-full flex-col gap-1.5 rounded-lg border border-ink-600 bg-[#0a0f1c] p-2">
-      <div className="flex gap-1">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#ff5f57]" />
-        <span className="h-1.5 w-1.5 rounded-full bg-[#febc2e]" />
-        <span className="h-1.5 w-1.5 rounded-full bg-[#28c840]" />
-      </div>
-      <Bar w="60%" c="#33445a" />
-      <Bar w="84%" c={ink} />
-      <Bar w="48%" c={accent} />
-      <Bar w="70%" c={ink} />
-      <Bar w="40%" c="#33445a" />
-    </div>
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+    </svg>
+  );
+}
+function MegaphoneIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="m3 11 18-5v12L3 14v-3z" />
+      <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+    </svg>
+  );
+}
+function ScaleIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+      <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+      <path d="M7 21h10" />
+      <path d="M12 3v18" />
+      <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+    </svg>
+  );
+}
+function TerminalIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="m4 17 6-6-6-6" />
+      <path d="M12 19h8" />
+    </svg>
   );
 }
 
-export function TemplateGallery({ config, patch }: { config: CardConfig; patch: Patch }) {
+function TemplatePicker({ config, setConfig }: { config: CardConfig; setConfig: SetConfig }) {
+  const { t, lang } = useI18n();
   return (
-    <div className="grid grid-cols-4 gap-2">
-      {(Object.keys(TEMPLATES) as TemplateId[]).map((id) => {
+    <div className="grid grid-cols-2 gap-2.5">
+      {TEMPLATE_IDS.map((id) => {
         const active = config.template === id;
+        const Meta = TPL_META[id];
         return (
           <button
             key={id}
             type="button"
-            onClick={() => patch({ template: id })}
+            onClick={() => setConfig({ template: id })}
             className={cx(
-              "group relative rounded-xl border bg-ink-900 p-2 text-right transition-all duration-200 active:scale-95",
+              "rounded-xl border p-3 text-start transition-all duration-200 active:scale-[0.97]",
               active
-                ? "border-brand-500 bg-brand-500/5 ring-2 ring-brand-500/25"
-                : "border-ink-700 hover:border-ink-600 hover:bg-ink-850",
+                ? "border-brand-500/60 bg-brand-500/10 shadow-[0_0_0_1px_rgba(16,185,129,0.25),0_8px_24px_-12px_rgba(16,185,129,0.5)]"
+                : "border-ink-700 bg-ink-900 hover:border-ink-600",
             )}
           >
-            <div className="h-[72px] lg:h-[84px]">
-              <TemplateThumb id={id} accent={config.accent} />
-            </div>
-            <div className={cx("mt-1.5 text-center text-[10.5px] font-bold", active ? "text-brand-300" : "text-mist-400")}>
-              {TEMPLATES[id].short}
-            </div>
-            {active && (
-              <span className="absolute top-1.5 left-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-500 text-ink-950">
-                <Check className="h-3 w-3" strokeWidth={3} />
+            <span
+              className="mb-2.5 block h-14 w-full overflow-hidden rounded-lg border"
+              style={{
+                borderColor: active ? hexA(config.accent, 0.45) : "#1b2735",
+                background: "#0b1118",
+                direction: "rtl",
+              }}
+            >
+              <span className="block p-2">
+                {id === "tweet" && (
+                  <span className="block rounded-md border border-white/10 bg-ink-800 p-2">
+                    <span className="mb-1.5 flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ background: config.accent }} />
+                      <span className="h-1.5 w-10 rounded-full bg-ink-600" />
+                    </span>
+                    <span className="block h-1.5 w-4/5 rounded-full bg-ink-700" />
+                    <span className="mt-1 block h-1.5 w-3/5 rounded-full bg-ink-700" />
+                  </span>
+                )}
+                {id === "hook" && (
+                  <span className="flex h-full flex-col items-start justify-center gap-1.5">
+                    <span className="h-2.5 w-4/5 rounded-full bg-mist-300/80" />
+                    <span className="h-2.5 w-1/2 rounded-full" style={{ background: config.accent }} />
+                  </span>
+                )}
+                {id === "problem" && (
+                  <span className="grid h-full grid-cols-2 gap-1.5">
+                    <span className="rounded-md border border-rosex-400/40 bg-rosex-400/10 p-1.5">
+                      <span className="block h-1.5 w-3/4 rounded-full bg-rosex-400/60" />
+                    </span>
+                    <span className="rounded-md border p-1.5" style={{ borderColor: hexA(config.accent, 0.4), background: hexA(config.accent, 0.1) }}>
+                      <span className="block h-1.5 w-3/4 rounded-full" style={{ background: hexA(config.accent, 0.7) }} />
+                    </span>
+                  </span>
+                )}
+                {id === "code" && (
+                  <span className="block h-full rounded-md border border-white/10 bg-[#0a0f1c] p-2">
+                    <span className="mb-1.5 flex gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-rosex-400/70" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-goldx-400/70" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-brand-400/70" />
+                    </span>
+                    <span className="block h-1.5 w-4/5 rounded-full bg-ink-600" />
+                    <span className="mt-1 block h-1.5 w-2/3 rounded-full" style={{ background: hexA(config.accent, 0.55) }} />
+                  </span>
+                )}
               </span>
-            )}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Meta.icon className={cx("h-4 w-4 shrink-0", active ? "text-brand-300" : "text-mist-500")} />
+              <span className={cx("truncate text-[13px] font-bold", active ? "text-mist-100" : "text-mist-300")}>
+                {t(`tpl.${id}`)}
+              </span>
+            </span>
           </button>
         );
       })}
+      {/* یادآوری ایده فقط برای اطلاع — بدون اکشن */}
+      <span className="col-span-2 flex items-start gap-1.5 text-[11px] leading-5 text-mist-500">
+        <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-goldx-400" />
+        {lang === "fa"
+          ? "ایده‌های آماده در تب «محتوا» کنار فیلد متن ذخیره شده‌اند."
+          : "Ready-made ideas live in the Content tab, next to the text field."}
+      </span>
     </div>
   );
 }
 
-/* ================= پنل محتوا ================= */
+/* ---------- تب محتوا ---------- */
+export function ContentPanel({ config, setConfig }: { config: CardConfig; setConfig: SetConfig }) {
+  const { t, num, lang } = useI18n();
+  const addIdea = () => {
+    const text = config.content.trim();
+    if (!text || config.savedIdeas.includes(text)) return;
+    setConfig({ savedIdeas: [text, ...config.savedIdeas].slice(0, 12) });
+  };
+  const ideas = IDEA_TEXTS[lang][config.template] ?? IDEA_TEXTS[lang].tweet;
 
-export function ContentPanel({ config, patch, notify }: { config: CardConfig; patch: Patch; notify: Notify }) {
   return (
     <div className="space-y-6">
-      <PanelSection icon={<LayoutTemplate className="h-4 w-4" />} title="قالب کارت">
-        <TemplateGallery config={config} patch={patch} />
-        <p className="flex items-start gap-1.5 text-[11.5px] leading-5 text-mist-500">
-          <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-goldx-400" />
-          {TEMPLATES[config.template].hint}
-        </p>
-      </PanelSection>
-
-      <PanelSection
-        icon={<PenLine className="h-4 w-4" />}
-        title="متن کارت"
-        trailing={
-          <span className="font-code text-[11px] text-mist-500" dir="ltr">
-            {faDigits(config.content.length)} / ۵۰۰
+      <PanelSection icon={<Type className="h-4 w-4" />} title={t("content.title")}>
+        <div className="relative">
+          <textarea
+            dir="auto"
+            rows={5}
+            value={config.content}
+            onChange={(e) => setConfig({ content: e.target.value })}
+            placeholder={PLACEHOLDERS[lang][config.template]}
+            className="w-full resize-y rounded-xl border border-ink-700 bg-ink-900 p-3.5 pb-7 text-[16px] leading-7 text-mist-100 outline-none transition-colors placeholder:text-mist-500/70 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          />
+          <span className="pointer-events-none absolute bottom-2.5 start-3.5 text-[11px] text-mist-500">
+            {num(config.content.length)} {t("content.chars")}
           </span>
-        }
-      >
-        <textarea
-          value={config.content}
-          dir={config.textDir}
-          maxLength={500}
-          onChange={(e) => patch({ content: e.target.value })}
-          rows={7}
-          placeholder="متن کارت را اینجا بنویس…"
-          className="min-h-[150px] w-full resize-y rounded-xl border border-ink-700 bg-ink-900 p-4 text-base leading-8 text-mist-100 outline-none transition-colors placeholder:text-mist-500/70 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
-        />
-        <p className="text-[11.5px] leading-5 text-mist-500">
-          دور هر عبارت <span className="font-code text-brand-300" dir="ltr">*ستاره*</span> بگذاری، با رنگ شاخص هایلایت
-          می‌شود.
-        </p>
+          <button
+            type="button"
+            onClick={addIdea}
+            disabled={!config.content.trim()}
+            title={t("content.saveIdea")}
+            className="absolute bottom-2 end-2.5 rounded-lg p-1.5 text-brand-400 transition hover:bg-brand-500/10 active:scale-90 disabled:text-mist-500/50"
+          >
+            <BookmarkPlus className="h-4.5 w-4.5" />
+          </button>
+        </div>
+
+        {config.savedIdeas.length > 0 && (
+          <div className="mt-3 rounded-xl border border-ink-700 bg-ink-900/60 p-3">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-mist-400">
+              <BookmarkPlus className="h-3.5 w-3.5 text-brand-400" />
+              {t("content.ideas")}
+              <span className="text-mist-500">({num(config.savedIdeas.length)})</span>
+            </div>
+            <ul className="max-h-44 space-y-1.5 overflow-y-auto">
+              {config.savedIdeas.map((idea, i) => (
+                <li key={`${idea.slice(0, 24)}-${i}`} className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setConfig({ content: idea })}
+                    className="min-w-0 flex-1 truncate rounded-lg border border-transparent bg-ink-800 px-3 py-2 text-start text-xs text-mist-200 transition hover:border-ink-600 hover:bg-ink-700 active:scale-[0.98]"
+                  >
+                    {idea.replace(/\n/g, " — ")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfig({ savedIdeas: config.savedIdeas.filter((_, j) => j !== i) })}
+                    className="rounded-lg p-2 text-mist-500 transition hover:bg-rosex-400/10 hover:text-rosex-400 active:scale-90"
+                    aria-label={t("content.removeIdea.aria")}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <Segmented
+            value={config.size}
+            onChange={(size) => setConfig({ size })}
+            options={SIZE_IDS.map((id) => ({ value: id, label: t(`size.${id}`) }))}
+          />
+          <Segmented
+            value={config.textDir}
+            onChange={(textDir) => setConfig({ textDir })}
+            options={[
+              { value: "rtl", label: t("content.dir.rtl"), title: t("content.dir.rtl") },
+              { value: "ltr", label: t("content.dir.ltr"), title: t("content.dir.ltr") },
+            ]}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2">
+            <Field label={t("content.font")}>
+              <div className="grid grid-cols-2 gap-2">
+                {FONT_IDS.map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setConfig({ font: id })}
+                    className={cx(
+                      "flex h-11 items-center justify-between rounded-xl border px-3.5 transition-all active:scale-[0.97]",
+                      config.font === id
+                        ? "border-brand-500/60 bg-brand-500/10 text-mist-100"
+                        : "border-ink-700 bg-ink-900 text-mist-400 hover:border-ink-600",
+                    )}
+                  >
+                    <span className="text-[13px] font-semibold">{t(`font.${id}`)}</span>
+                    <span className="truncate text-[11px] text-mist-500" style={{ fontFamily: FONTS[id].stack }}>
+                      آا 12
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Field>
+          </div>
+        </div>
       </PanelSection>
 
-      <PanelSection icon={<Sparkles className="h-4 w-4" />} title="ایده‌های آماده">
-        <div className="flex flex-wrap gap-2">
-          {IDEAS[config.template].map((idea, i) => (
+      <PanelSection icon={<Sparkles className="h-4 w-4" />} title={t("content.ideas")}>
+        <div className="space-y-2">
+          {ideas.map((idea) => (
             <button
-              key={i}
+              key={idea}
               type="button"
-              onClick={() => {
-                patch({ content: idea });
-                notify("info", "متن نمونه جایگزین شد");
-              }}
-              className="max-w-full truncate rounded-full border border-ink-600 bg-ink-800 px-3.5 py-2 text-xs font-semibold text-mist-300 transition-all hover:border-brand-500/50 hover:text-brand-300 active:scale-95"
+              onClick={() => setConfig({ content: idea })}
+              className="block w-full rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-start text-[13px] leading-6 text-mist-300 transition hover:border-brand-500/40 hover:bg-ink-800 active:scale-[0.99]"
             >
-              {idea.split("\n")[0].slice(0, 34)}…
+              <Highlight text={idea} accent={config.accent} />
             </button>
           ))}
         </div>
@@ -204,288 +295,279 @@ export function ContentPanel({ config, patch, notify }: { config: CardConfig; pa
   );
 }
 
-/* ================= پنل ظاهر ================= */
-
-export function StylePanel({ config, patch }: { config: CardConfig; patch: Patch }) {
+/* ---------- تب ظاهر ---------- */
+export function StylePanel({ config, setConfig }: { config: CardConfig; setConfig: SetConfig }) {
+  const { t } = useI18n();
+  const isPreset = PRESET_ACCENTS.includes(config.accent);
   return (
     <div className="space-y-6">
-      <PanelSection
-        icon={<Palette className="h-4 w-4" />}
-        title="رنگ شاخص"
-        trailing={<span className="font-code text-[11px] text-mist-500" dir="ltr">{config.accent}</span>}
-      >
-        <div className="flex flex-wrap items-center gap-2.5">
-          {ACCENT_PRESETS.map((c) => {
-            const active = config.accent.toLowerCase() === c.toLowerCase();
+      <PanelSection icon={<MonitorPlay className="h-4 w-4" />} title={t("style.template")}>
+        <TemplatePicker config={config} setConfig={setConfig} />
+      </PanelSection>
+
+      <PanelSection icon={<RectangleHorizontal className="h-4 w-4" />} title={t("style.ratio")}>
+        <div className="grid grid-cols-3 gap-2.5">
+          {RATIO_IDS.map((id) => {
+            const { w, h } = RATIOS[id];
+            const active = config.ratio === id;
+            const boxW = id === "16:9" ? 46 : id === "1:1" ? 34 : 22;
+            const boxH = id === "16:9" ? 26 : id === "1:1" ? 34 : 42;
             return (
               <button
-                key={c}
+                key={id}
                 type="button"
-                aria-label={`رنگ ${c}`}
-                onClick={() => patch({ accent: c })}
+                onClick={() => setConfig({ ratio: id })}
                 className={cx(
-                  "flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-200 active:scale-90",
-                  active ? "scale-110 border-mist-100" : "border-transparent hover:scale-105",
+                  "flex flex-col items-center gap-2 rounded-xl border py-3.5 transition-all active:scale-[0.96]",
+                  active
+                    ? "border-brand-500/60 bg-brand-500/10"
+                    : "border-ink-700 bg-ink-900 hover:border-ink-600",
                 )}
-                style={{ background: c, boxShadow: active ? `0 0 0 4px ${hexA(c, 0.25)}` : undefined }}
               >
-                {active && <Check className="h-4.5 w-4.5" strokeWidth={3.2} style={{ color: checkColorOn(c) }} />}
+                <span
+                  className="block rounded-[4px] border-2"
+                  style={{
+                    width: boxW,
+                    height: boxH,
+                    borderColor: active ? config.accent : "#26374a",
+                    background: active ? hexA(config.accent, 0.15) : "transparent",
+                  }}
+                />
+                <span className={cx("font-code text-[12px] font-semibold", active ? "text-brand-300" : "text-mist-400")}>
+                  {t(`ratio.${id}`)}
+                </span>
               </button>
             );
           })}
+        </div>
+      </PanelSection>
+
+      <PanelSection icon={<Palette className="h-4 w-4" />} title={t("style.accent")}>
+        <div className="flex items-center gap-2.5">
+          {PRESET_ACCENTS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setConfig({ accent: c })}
+              className={cx(
+                "h-8.5 w-8.5 shrink-0 rounded-full border-2 transition-transform active:scale-90",
+                config.accent === c ? "scale-110 border-mist-100" : "border-transparent hover:scale-105",
+              )}
+              style={{ background: c, boxShadow: config.accent === c ? `0 0 18px ${hexA(c, 0.45)}` : undefined }}
+              aria-label={c}
+            />
+          ))}
           <label
-            className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-dashed border-ink-600 transition hover:border-brand-500/60"
-            style={{
-              background: "conic-gradient(from 40deg, #f43f5e, #f59e0b, #a3e635, #10b981, #38bdf8, #a78bfa, #f43f5e)",
-            }}
-            title="رنگ دلخواه"
+            className={cx(
+              "relative ms-auto h-8.5 w-8.5 shrink-0 cursor-pointer rounded-full border-2 border-dashed transition-transform active:scale-90",
+              !isPreset ? "scale-110 border-mist-100" : "border-ink-600 hover:scale-105",
+            )}
+            title={t("style.custom")}
           >
             <input
               type="color"
               value={config.accent}
-              onChange={(e) => patch({ accent: e.target.value })}
+              onChange={(e) => setConfig({ accent: e.target.value })}
               className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+            />
+            <span
+              className="pointer-events-none absolute inset-1 rounded-full"
+              style={{ background: `conic-gradient(#f43f5e,#f59e0b,#10b981,#0ea5e9,#a855f7,#f43f5e)` }}
             />
           </label>
         </div>
       </PanelSection>
 
-      <PanelSection icon={<Wallpaper className="h-4 w-4" />} title="پس‌زمینه‌ی قاب">
-        <Segmented value={config.bg} onChange={(bg) => patch({ bg })} options={BGS} />
+      <PanelSection icon={<Paintbrush className="h-4 w-4" />} title={t("style.bg")}>
+        <Segmented
+          value={config.bg}
+          onChange={(bg) => setConfig({ bg })}
+          options={BG_IDS.map((id) => ({ value: id, label: t(`bg.${id}`) }))}
+        />
       </PanelSection>
-
-      <PanelSection icon={<Type className="h-4 w-4" />} title="فونت متن">
-        <div className="grid grid-cols-1 gap-2">
-          {(Object.keys(FONTS) as FontId[]).map((id) => {
-            const active = config.font === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => patch({ font: id })}
-                className={cx(
-                  "flex items-center justify-between rounded-xl border px-4 py-3 text-right transition-all duration-200 active:scale-[0.98]",
-                  active ? "border-brand-500 bg-brand-500/5" : "border-ink-700 bg-ink-900 hover:border-ink-600",
-                )}
-              >
-                <span className="text-[15px] text-mist-200" style={{ fontFamily: FONTS[id].stack }}>
-                  {FONTS[id].sample}
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className={cx("text-xs font-bold", active ? "text-brand-300" : "text-mist-500")}>
-                    {FONTS[id].label}
-                  </span>
-                  {active && <Check className="h-4 w-4 text-brand-400" strokeWidth={3} />}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </PanelSection>
-
-      <div className="grid grid-cols-1 gap-4">
-        <PanelSection icon={<Type className="h-4 w-4" />} title="اندازه‌ی متن">
-          <Segmented value={config.size} onChange={(size) => patch({ size: size as SizeId })} options={SIZES} />
-        </PanelSection>
-
-        <PanelSection icon={<AlignRight className="h-4 w-4" />} title="جهت متن">
-          <Segmented
-            value={config.textDir}
-            onChange={(textDir) => patch({ textDir })}
-            options={[
-              { value: "rtl", label: <span className="flex items-center gap-1.5"><AlignRight className="h-4 w-4" /> راست‌چین</span> },
-              { value: "ltr", label: <span className="flex items-center gap-1.5"><AlignLeft className="h-4 w-4" /> چپ‌چین</span> },
-            ]}
-          />
-        </PanelSection>
-
-        {config.template === "tweet" && (
-          <PanelSection icon={<LayoutTemplate className="h-4 w-4" />} title="چینش هدر کارت">
-            <Segmented
-              value={config.headerAlign}
-              onChange={(headerAlign) => patch({ headerAlign })}
-              options={[
-                { value: "right", label: "راست" },
-                { value: "left", label: "چپ" },
-              ]}
-            />
-          </PanelSection>
-        )}
-      </div>
     </div>
   );
 }
 
-/* ================= پنل برند ================= */
-
-const VERIFIED_OPTIONS: { value: VerifiedId; label: string; color?: string }[] = [
-  { value: "none", label: "بدون تیک" },
-  { value: "brand", label: "هم‌رنگ برند" },
-  { value: "blue", label: "آبی" },
-  { value: "gold", label: "طلایی" },
-];
-
+/* ---------- تب برند ---------- */
 export function BrandPanel({
   config,
-  patch,
+  setConfig,
   onLogoFile,
-  onRemoveLogo,
 }: {
   config: CardConfig;
-  patch: Patch;
-  onLogoFile: (f: File) => void;
-  onRemoveLogo: () => void;
+  setConfig: SetConfig;
+  onLogoFile: (f: File | null) => void;
 }) {
-  const fileRef = useRef<HTMLInputElement | null>(null);
-
+  const { t, lang } = useI18n();
   return (
     <div className="space-y-6">
-      <PanelSection icon={<User className="h-4 w-4" />} title="هویت برند">
+      <PanelSection icon={<UserRound className="h-4 w-4" />} title={t("brand.title")}>
         <div className="space-y-3">
-          <Field label="نام برند / نمایش">
+          <Field label={t("brand.name")}>
             <TextInput
+              dir="auto"
               value={config.brandName}
-              onChange={(e) => patch({ brandName: e.target.value })}
-              placeholder="مثلاً: استارتیچ | Starteach"
+              onChange={(e) => setConfig({ brandName: e.target.value })}
             />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="آیدی / نام کاربری">
+            <Field label={t("brand.handle")}>
               <TextInput
                 dir="ltr"
                 mono
                 value={config.brandHandle}
-                onChange={(e) => patch({ brandHandle: e.target.value })}
-                placeholder="@handle"
-                className="text-left"
+                onChange={(e) => setConfig({ brandHandle: e.target.value })}
               />
             </Field>
-            <Field label="دامنه / فوتر">
+            <Field label={t("brand.domain")}>
               <TextInput
                 dir="ltr"
                 mono
                 value={config.brandDomain}
-                onChange={(e) => patch({ brandDomain: e.target.value })}
-                placeholder="example.com"
-                className="text-left"
+                onChange={(e) => setConfig({ brandDomain: e.target.value })}
               />
             </Field>
           </div>
-        </div>
-      </PanelSection>
-
-      <PanelSection icon={<Check className="h-4 w-4" />} title="تیک تأیید">
-        <div className="grid grid-cols-4 gap-2">
-          {VERIFIED_OPTIONS.map((opt) => {
-            const active = config.verified === opt.value;
-            const color = opt.value === "brand" ? config.accent : opt.color ?? "#8298ae";
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => patch({ verified: opt.value })}
-                className={cx(
-                  "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-all duration-200 active:scale-95",
-                  active ? "border-brand-500 bg-brand-500/5 ring-2 ring-brand-500/20" : "border-ink-700 bg-ink-900 hover:border-ink-600",
-                )}
-              >
-                {opt.value === "none" ? (
-                  <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5d7189" strokeWidth={2}>
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="m6 6 12 12" strokeLinecap="round" />
-                  </svg>
-                ) : (
-                  <VerifiedSeal color={color} size={22} />
-                )}
-                <span className={cx("text-[10px] font-bold", active ? "text-brand-300" : "text-mist-400")}>{opt.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </PanelSection>
-
-      <PanelSection icon={<ImagePlus className="h-4 w-4" />} title="لوگوی برند">
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) onLogoFile(f);
-            e.target.value = "";
-          }}
-        />
-        {config.logoData ? (
-          <div className="flex items-center gap-3 rounded-xl border border-ink-700 bg-ink-900 p-3">
-            <img
-              src={config.logoData}
-              alt="لوگوی برند"
-              className="h-14 w-14 rounded-xl border border-ink-600 object-cover"
-            />
-            <div className="flex-1">
-              <p className="text-xs font-bold text-mist-200">لوگوی تصویر فعال است</p>
-              <p className="mt-0.5 text-[11px] text-mist-500">به‌صورت خودکار فشرده و ذخیره شد</p>
+          <Field label={t("brand.verified")}>
+            <div className="grid grid-cols-4 gap-2">
+              {VERIFIED_IDS.map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setConfig({ verified: v })}
+                  className={cx(
+                    "flex flex-col items-center gap-1.5 rounded-xl border py-2.5 transition-all active:scale-95",
+                    config.verified === v
+                      ? "border-brand-500/60 bg-brand-500/10"
+                      : "border-ink-700 bg-ink-900 hover:border-ink-600",
+                  )}
+                >
+                  <VerifiedSeal
+                    color={v === "none" ? "#33445a" : v === "brand" ? config.accent : v === "blue" ? "#3d9df2" : "#f0b429"}
+                    size={18}
+                  />
+                  <span
+                    className={cx(
+                      "text-[11px] font-semibold",
+                      config.verified === v ? "text-mist-100" : "text-mist-500",
+                    )}
+                  >
+                    {t(`ver.${v}`)}
+                  </span>
+                </button>
+              ))}
             </div>
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              className="rounded-lg border border-ink-600 bg-ink-800 px-3 py-2 text-[11px] font-bold text-mist-300 transition hover:border-brand-500/50 hover:text-brand-300 active:scale-95"
-            >
-              تغییر
-            </button>
-            <button
-              type="button"
-              onClick={onRemoveLogo}
-              aria-label="حذف لوگو"
-              className="rounded-lg border border-ink-600 bg-ink-800 p-2 text-rosex-400 transition hover:border-rosex-400/50 active:scale-95"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="flex h-24 w-full flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-ink-600 text-mist-400 transition-all hover:border-brand-500/60 hover:text-brand-300 active:scale-[0.99]"
-          >
-            <ImagePlus className="h-5 w-5 text-brand-400" />
-            <span className="text-xs font-bold">انتخاب لوگو (PNG / JPG)</span>
-            <span className="text-[10.5px] text-mist-500">به‌جای حروف اختصاری روی کارت نمایش داده می‌شود</span>
-          </button>
-        )}
+          </Field>
+        </div>
       </PanelSection>
 
       <PanelSection
-        icon={<MessageCircle className="h-4 w-4" />}
-        title="آمار شبکه‌های اجتماعی"
-        trailing={<ToggleSwitch on={config.showStats} onChange={(v) => patch({ showStats: v })} label="نمایش" />}
+        icon={<ImagePlus className="h-4 w-4" />}
+        title={t("brand.logo")}
+        trailing={
+          config.logoData ? (
+            <button
+              type="button"
+              onClick={() => {
+                onLogoFile(null);
+                setConfig({ logoData: null });
+              }}
+              className="text-xs font-bold text-rosex-400 transition hover:underline"
+            >
+              {t("brand.logoRemove")}
+            </button>
+          ) : undefined
+        }
       >
-        <div
-          className={cx(
-            "grid grid-cols-3 gap-2.5 transition-opacity",
-            !config.showStats && "pointer-events-none opacity-40",
-          )}
-        >
-          {(
-            [
-              ["comments", "کامنت"],
-              ["retweets", "بازنشر"],
-              ["likes", "لایک"],
-            ] as const
-          ).map(([key, label]) => (
-            <Field key={key} label={label}>
-              <TextInput
-                dir="ltr"
-                mono
-                value={config.stats[key]}
-                onChange={(e) => patch({ stats: { ...config.stats, [key]: e.target.value } })}
-                className="text-left"
+        <div className="flex items-center gap-3 rounded-xl border border-ink-700 bg-ink-900 p-3">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-ink-600 bg-ink-800">
+            {config.logoData ? (
+              <img src={config.logoData} alt="logo" className="h-full w-full object-cover" />
+            ) : (
+              <ImagePlus className="h-5 w-5 text-mist-500" />
+            )}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-semibold text-mist-300">
+              {config.logoData ? t("brand.logoImgStatus") : t("brand.logoTextStatus")}
+            </p>
+            <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 px-3 py-1.5 text-[12px] font-bold text-mist-200 transition hover:border-brand-500/50 hover:text-brand-300 active:scale-95">
+              <ImagePlus className="h-3.5 w-3.5" />
+              {t("brand.logoPick")}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  onLogoFile(e.target.files?.[0] ?? null);
+                  e.target.value = "";
+                }}
               />
-            </Field>
-          ))}
+            </label>
+          </div>
         </div>
-        <p className="text-[11px] text-mist-500">آمار فقط در قالب «توییت شیشه‌ای» نمایش داده می‌شود.</p>
+      </PanelSection>
+
+      <PanelSection
+        icon={<Hash className="h-4 w-4" />}
+        title={t("brand.stats")}
+        trailing={<ToggleSwitch on={config.showStats} onChange={(v) => setConfig({ showStats: v })} />}
+      >
+        {config.showStats && (
+          <div className="grid grid-cols-3 gap-3">
+            <Field label={t("brand.comments")}>
+              <div className="relative">
+                <MessagesSquare className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-mist-500" />
+                <TextInput
+                  dir="ltr"
+                  mono
+                  className="ps-9"
+                  value={config.stats.comments}
+                  onChange={(e) => setConfig({ stats: { ...config.stats, comments: e.target.value } })}
+                />
+              </div>
+            </Field>
+            <Field label={t("brand.retweets")}>
+              <div className="relative">
+                <Repeat2 className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-mist-500" />
+                <TextInput
+                  dir="ltr"
+                  mono
+                  className="ps-9"
+                  value={config.stats.retweets}
+                  onChange={(e) => setConfig({ stats: { ...config.stats, retweets: e.target.value } })}
+                />
+              </div>
+            </Field>
+            <Field label={t("brand.likes")}>
+              <div className="relative">
+                <Heart className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-rosex-400" />
+                <TextInput
+                  dir="ltr"
+                  mono
+                  className="ps-9"
+                  value={config.stats.likes}
+                  onChange={(e) => setConfig({ stats: { ...config.stats, likes: e.target.value } })}
+                />
+              </div>
+            </Field>
+          </div>
+        )}
+        <div className="grid grid-cols-2 gap-3">
+          <Segmented
+            value={config.headerAlign}
+            onChange={(headerAlign) => setConfig({ headerAlign })}
+            options={[
+              { value: "right", label: <AlignRight className="h-4 w-4" />, title: t("content.dir.rtl") },
+              { value: "left", label: <AlignLeft className="h-4 w-4" />, title: t("content.dir.ltr") },
+            ]}
+          />
+          <span className="flex items-center justify-center rounded-xl border border-ink-700 bg-ink-900 text-[11px] text-mist-500">
+            <Grid3x3 className="ms-2 h-3.5 w-3.5" />
+            {lang === "fa" ? "چینش هدر کارت" : "Card header layout"}
+          </span>
+        </div>
       </PanelSection>
     </div>
   );
