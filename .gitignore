@@ -1,0 +1,11 @@
+```
+# Font files
+*.ttf
+*.woff2
+
+# JavaScript libraries
+*.min.js
+
+# CSS files
+*.css
+```
