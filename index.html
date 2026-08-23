@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" class="dark">
+<html lang="fa" dir="rtl" class="dark h-full">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>استودیو پیشرفته تولید ریلز و کارت استارتیچ | Starteach Reel & Card Studio Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>استودیو پیشرفته تولید ریلز و کارت استارتیچ | Starteach Mobile-First Card Studio Pro</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -39,13 +39,20 @@
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/lalezar-font@v2.0.0/dist/font-face.css" rel="stylesheet" type="text/css" />
 
   <style>
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw !important;
+      position: relative;
+      touch-action: manipulation;
+    }
+
     .font-vazir { font-family: 'Vazirmatn', sans-serif; }
     .font-shabnam { font-family: 'Shabnam', sans-serif; }
     .font-lalezar { font-family: 'Lalezar', cursive; }
     .font-inter { font-family: 'Inter', sans-serif; }
     .font-mono-code { font-family: 'Fira Code', monospace; }
 
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #090d16; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #10b981; }
@@ -66,67 +73,92 @@
     }
 
     details summary::-webkit-details-marker { display: none; }
+
+    /* Mobile Tab Styles */
+    .mobile-tab-btn.active {
+      background-color: #10b981;
+      color: #020617;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
   </style>
 </head>
 
-<body class="bg-slate-950 text-slate-100 font-vazir min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 pb-20 lg:pb-0">
+<body class="bg-slate-950 text-slate-100 font-vazir min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 pb-20 lg:pb-0 max-w-full overflow-x-hidden">
 
-  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-3 md:px-6 py-2.5">
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-3 md:px-6 py-2">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 text-lg shadow-md shadow-emerald-500/20 shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 text-base md:text-lg shadow-md shadow-emerald-500/20 shrink-0">
           ST
         </div>
         <div>
-          <h1 class="font-bold text-sm md:text-base text-slate-100 flex items-center gap-2">
-            استودیو ریلز و کارت استارتیچ
-            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full hidden sm:inline-block">v8.5 Pro Local</span>
+          <h1 class="font-bold text-xs md:text-base text-slate-100 flex items-center gap-1.5">
+            استودیو کارت استارتیچ
+            <span class="text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full hidden sm:inline-block">v9.0 Mobile-Pro</span>
           </h1>
-          <p class="text-[11px] text-slate-400 hidden md:block">طراحی متوازن، جاستیفای متن، پالت‌های رنگی و ذخیره دائمی لوکال</p>
+          <p class="text-[10px] text-slate-400 hidden md:block">طراحی موبایل‌فرست، تراز کامل، خروجی PNG/GIF بدون کشیدگی</p>
         </div>
       </div>
 
       <!-- Header Action Buttons -->
-      <div class="flex items-center gap-2">
-        <button id="btnDayMode" title="طرح روز (Light Mode)" class="px-2.5 py-1.5 text-xs font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 rounded-lg border border-amber-500/30 transition flex items-center gap-1 active:scale-95">
+      <div class="flex items-center gap-1.5">
+        <button id="btnDayMode" title="طرح روز (Light Mode)" class="p-2 md:px-2.5 md:py-1.5 text-xs font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 rounded-lg border border-amber-500/30 transition flex items-center gap-1 active:scale-95">
           <span>☀️</span>
           <span class="hidden md:inline">طرح روز</span>
         </button>
 
-        <button id="btnNightMode" title="طرح شب (Dark Mode)" class="px-2.5 py-1.5 text-xs font-medium bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 rounded-lg border border-indigo-500/30 transition flex items-center gap-1 active:scale-95">
+        <button id="btnNightMode" title="طرح شب (Dark Mode)" class="p-2 md:px-2.5 md:py-1.5 text-xs font-medium bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 rounded-lg border border-indigo-500/30 transition flex items-center gap-1 active:scale-95">
           <span>🌙</span>
           <span class="hidden md:inline">طرح شب</span>
         </button>
 
-        <button id="exportGifBtn" class="px-3 py-1.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition shadow-lg shadow-indigo-600/25 flex items-center gap-1.5 active:scale-95 shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span>دانلود GIF 🎬</span>
+        <button id="exportGifBtn" class="px-2.5 py-1.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition shadow-md shadow-indigo-600/25 flex items-center gap-1 active:scale-95 shrink-0 hidden md:flex">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span>GIF 🎬</span>
         </button>
 
-        <button id="exportBtn" class="px-4 py-1.5 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg transition shadow-lg shadow-emerald-500/25 flex items-center gap-1.5 active:scale-95 shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        <button id="exportBtn" class="px-3 py-1.5 text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg transition shadow-md shadow-emerald-500/25 flex items-center gap-1 active:scale-95 shrink-0">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           <span>دانلود PNG</span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+  <!-- MOBILE VIEWPORT TAB SWITCHER (< lg screens) -->
+  <nav class="lg:hidden bg-slate-900 border-b border-slate-800 p-1.5 sticky top-[49px] z-30 flex items-center justify-around gap-1">
+    <button id="tabContent" onclick="switchMobileTab('content')" class="mobile-tab-btn active flex-1 py-2 text-xs rounded-xl text-center font-bold transition flex items-center justify-center gap-1">
+      <span>✏️</span>
+      <span>محتوا و قالب</span>
+    </button>
+    <button id="tabSettings" onclick="switchMobileTab('settings')" class="mobile-tab-btn flex-1 py-2 text-xs rounded-xl text-center font-medium text-slate-400 hover:text-slate-200 transition flex items-center justify-center gap-1">
+      <span>⚙️</span>
+      <span>برند و تنظیمات</span>
+    </button>
+    <button id="tabPreview" onclick="switchMobileTab('preview')" class="mobile-tab-btn flex-1 py-2 text-xs rounded-xl text-center font-medium text-slate-400 hover:text-slate-200 transition flex items-center justify-center gap-1">
+      <span>👁️</span>
+      <span>پیش‌نمایش</span>
+    </button>
+  </nav>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-2.5 sm:p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 items-start overflow-x-hidden">
     
-    <!-- CONTROLS SIDEBAR WITH ACCORDIONS -->
-    <section class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4 shadow-xl">
+    <!-- CONTROLS SIDEBAR -->
+    <section id="controlsSidebar" class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-3 md:p-4 space-y-3.5 shadow-xl w-full max-w-full overflow-x-hidden">
       
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-          تنظیمات لایه‌ها، موقعیت و رنگ
+          تنظیمات لایه‌ها و متن
         </h2>
-        <button id="openResetModalBtn" class="text-[10px] text-slate-400 hover:text-rose-400 underline">بازنشانی تنظیمات</button>
+        <button id="openResetModalBtn" class="text-[10px] text-slate-400 hover:text-rose-400 underline">بازنشانی</button>
       </div>
 
-      <!-- SCENARIO QUICK SELECTOR -->
-      <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-        <label class="block text-[11px] text-slate-400 mb-1 font-medium">بارگذاری سریع سناریو آماده استارتیچ</label>
+      <!-- SCENARIOS QUICK SELECTOR -->
+      <div class="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">
+        <label class="block text-[11px] text-slate-400 mb-1 font-medium">بارگذاری سریع سناریو استارتیچ</label>
         <select id="scenarioSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-medium focus:border-emerald-500 focus:outline-none">
           <option value="">-- انتخاب سناریو پیش‌فرض --</option>
           <option value="s1">سناریو ۱: منشی هوشمند برخط</option>
@@ -142,7 +174,7 @@
       <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden" open>
         <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
           <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
-            <span>✏️ متن اصلی، تراز جاستیفای و تایپوگرافی</span>
+            <span>✏️ متن اصلی، تراز جاستیفای و فونت</span>
           </span>
           <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </summary>
@@ -152,10 +184,10 @@
               <label class="text-xs text-slate-300 font-medium">متن اصلی کارت (Main Content)</label>
               <span class="text-[10px] text-emerald-400 font-mono">*هایلایت* | #هشتگ</span>
             </div>
-            <textarea id="cardContent" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs md:text-sm text-slate-100 focus:border-emerald-500 focus:outline-none leading-relaxed font-vazir" placeholder="متن اصلی خود را بنویسید..."></textarea>
+            <textarea id="cardContent" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs md:text-sm text-slate-100 focus:border-emerald-500 focus:outline-none leading-relaxed font-vazir" placeholder="متن اصلی خود را بنویسید..."></textarea>
           </div>
 
-          <div class="grid grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] text-slate-400 mb-1">قالب ساختاری کارت</label>
               <select id="templateSelect" class="w-full bg-slate-900 border border-emerald-500/50 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-bold focus:border-emerald-500 focus:outline-none">
@@ -183,7 +215,7 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] text-slate-400 mb-1">اندازه قلم متن</label>
               <select id="fontSize" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
@@ -208,375 +240,381 @@
         </div>
       </details>
 
-      <!-- BOX 2: LOGO & HEADER SETTINGS -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
-            <span>🖼️ لوگو، هدر، موقعیت و جهت برند</span>
-          </span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </summary>
-        <div class="p-3 space-y-3 border-t border-slate-800/80 text-xs">
-          
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800/60">
-            <span class="text-[11px] text-slate-300">نمایش تصویر لوگو / آواتار</span>
-            <input type="checkbox" id="toggleLogo" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
-          </div>
-
-          <!-- Custom Logo Upload Box -->
-          <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
-            <div class="flex items-center justify-between">
-              <label class="text-[11px] font-medium text-slate-300">تصویر لوگوی اختصاصی (پیش‌فرض: icon.png)</label>
-              <button id="removeLogoBtn" class="text-[10px] text-rose-400 hover:underline hidden">حذف عکس آپلودی</button>
-            </div>
-            <div class="flex items-center gap-3">
-              <input type="file" id="logoInput" accept="image/*" class="hidden">
-              <button onclick="document.getElementById('logoInput').click()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                آپلود لوگوی جدید
-              </button>
-              <span id="logoStatus" class="text-[10px] text-slate-400">لود از icon.png</span>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="text-[10px] text-slate-400">نام برند اصلی</label>
-                <input type="checkbox" id="toggleBrandName" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
-              </div>
-              <input type="text" id="brandName" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" value="استارتیچ | Starteach">
-            </div>
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="text-[10px] text-slate-400">آیدی / handle@</label>
-                <input type="checkbox" id="toggleBrandHandle" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-              </div>
-              <input type="text" id="brandHandle" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none" value="@starteach.ir">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">چیدمان و جهت هدر</label>
-              <select id="headerAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
-                <option value="right" selected>راست‌چین (فارسی)</option>
-                <option value="center">وسط‌چین</option>
-                <option value="left">چپ‌چین (انگلیسی)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">چیدمان شعار برند</label>
-              <select id="sloganAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
-                <option value="right" selected>راست‌چین</option>
-                <option value="center">وسط‌چین</option>
-                <option value="left">چپ‌چین</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-[10px] text-slate-400">عنوان فرعی / بج (SubTitle)</label>
-              <input type="checkbox" id="toggleSubTitle" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-            </div>
-            <input type="text" id="subTitleInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="⚡ نکته کاربردی">
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-[10px] text-slate-400">شعار برند (Brand Slogan)</label>
-              <input type="checkbox" id="toggleBrandSlogan" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-            </div>
-            <input type="text" id="brandSloganInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="مرکز تخصصی توسعه هوشمند و آموزش">
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-[10px] text-slate-400">متن اضافی هدر</label>
-              <input type="checkbox" id="toggleHeaderExtra" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-            </div>
-            <input type="text" id="headerExtraInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="⚡ مرجع ابزارهای دیجیتال">
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="text-[10px] text-slate-400">آیکون پلتفرم</label>
-                <input type="checkbox" id="togglePlatformIcon" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-              </div>
-              <select id="platformIconSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
-                <option value="none" selected>بدون آیکون</option>
-                <option value="x">توییتر / X</option>
-                <option value="instagram">اینستاگرام</option>
-                <option value="telegram">تلگرام</option>
-                <option value="youtube">یوتیوب</option>
-                <option value="threads">تردز (Threads)</option>
-                <option value="starteach">نماد استارتیچ</option>
-              </select>
-            </div>
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="text-[10px] text-slate-400">دکمه Follow/Dial</label>
-                <input type="checkbox" id="toggleFollowBtn" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-              </div>
-              <input type="text" id="followBtnText" value="دنبال کردن" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between pt-1">
-            <span class="text-[11px] text-slate-300">منوی سه نقطه (•••) در هدر</span>
-            <input type="checkbox" id="toggleThreeDots" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
-          </div>
-
-        </div>
-      </details>
-
-      <!-- BOX 3: VERIFIED BADGE SETTINGS -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-sky-400 flex items-center gap-2">
-            <span>☑️ تنظیمات نشان و تیک تایید (Verified Badge)</span>
-          </span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </summary>
-        <div class="p-3 space-y-2.5 border-t border-slate-800/80">
-          <label class="block text-[11px] text-slate-400 mb-1">انتخاب استایل تیک تایید</label>
-          <select id="verifiedToggle" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
-            <option value="insta" selected>تیک آبی رسمی اینستاگرام (Instagram Official Blue)</option>
-            <option value="emerald">سبز اختصاصی استارتیچ (Emerald Badge)</option>
-            <option value="blue">آبی توییتر (Twitter Blue)</option>
-            <option value="gold">طلایی سازمان (Gold Badge)</option>
-            <option value="none">بدون تیک تایید</option>
-          </select>
-        </div>
-      </details>
-
-      <!-- BOX 4: PROBLEM & SOLUTION BOX SETTINGS -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-amber-400 flex items-center gap-2">
-            <span>⚙️ تنظیمات بخش مشکل (❌) و راهکار (✅)</span>
-          </span>
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="toggleProblemSection" class="w-4 h-4 accent-amber-500 rounded cursor-pointer" onclick="event.stopPropagation()">
+      <!-- SECTION TOGGLED BY MOBILE TABS -->
+      <div id="secondarySettingsGroup" class="space-y-3.5">
+        
+        <!-- BOX 2: LOGO & HEADER SETTINGS -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
+              <span>🖼️ لوگو، هدر، موقعیت و جهت برند</span>
+            </span>
             <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-        </summary>
-        <div class="p-3 space-y-2 border-t border-slate-800/80">
-          <div>
-            <label class="text-[10px] text-slate-400">متن بخش مشکل (❌):</label>
-            <input type="text" id="problemTextInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-rose-200" placeholder="متن مشکل...">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-400">متن بخش راهکار (✅):</label>
-            <input type="text" id="solutionTextInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-emerald-200" placeholder="متن راهکار...">
-          </div>
-        </div>
-      </details>
+          </summary>
+          <div class="p-3 space-y-2.5 border-t border-slate-800/80 text-xs">
+            
+            <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/60">
+              <span class="text-[11px] text-slate-300">نمایش تصویر لوگو / آواتار</span>
+              <input type="checkbox" id="toggleLogo" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" checked>
+            </div>
 
-      <!-- BOX 5: CTA BOX SETTINGS -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-sky-400 flex items-center gap-2">
-            <span>🚀 تنظیمات باکس فراخوان اقدام (CTA Box)</span>
-          </span>
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="toggleCtaBox" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" onclick="event.stopPropagation()">
+            <!-- Custom Logo Upload Box -->
+            <div class="p-2 bg-slate-900 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label class="text-[11px] font-medium text-slate-300">تصویر لوگوی اختصاصی</label>
+                <button id="removeLogoBtn" class="text-[10px] text-rose-400 hover:underline hidden">حذف عکس</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <input type="file" id="logoInput" accept="image/*" class="hidden">
+                <button onclick="document.getElementById('logoInput').click()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1 shrink-0">
+                  <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  آپلود عکس جدید
+                </button>
+                <span id="logoStatus" class="text-[10px] text-slate-400 truncate">پیش‌فرض: icon.png</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[10px] text-slate-400">نام برند اصلی</label>
+                  <input type="checkbox" id="toggleBrandName" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+                </div>
+                <input type="text" id="brandName" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" value="استارتیچ | Starteach">
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[10px] text-slate-400">آیدی / handle@</label>
+                  <input type="checkbox" id="toggleBrandHandle" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+                </div>
+                <input type="text" id="brandHandle" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none" value="@starteach.ir">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-1">چیدمان و جهت هدر</label>
+                <select id="headerAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                  <option value="right" selected>راست‌چین (فارسی)</option>
+                  <option value="center">وسط‌چین</option>
+                  <option value="left">چپ‌چین (انگلیسی)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-1">چیدمان شعار برند</label>
+                <select id="sloganAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                  <option value="right" selected>راست‌چین</option>
+                  <option value="center">وسط‌چین</option>
+                  <option value="left">چپ‌چین</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[10px] text-slate-400">عنوان فرعی / بج (SubTitle)</label>
+                <input type="checkbox" id="toggleSubTitle" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+              </div>
+              <input type="text" id="subTitleInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="⚡ نکته کاربردی">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[10px] text-slate-400">شعار برند (Brand Slogan)</label>
+                <input type="checkbox" id="toggleBrandSlogan" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+              </div>
+              <input type="text" id="brandSloganInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="مرکز تخصصی توسعه هوشمند و آموزش">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[10px] text-slate-400">متن اضافی هدر</label>
+                <input type="checkbox" id="toggleHeaderExtra" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+              </div>
+              <input type="text" id="headerExtraInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="⚡ مرجع ابزارهای دیجیتال">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[10px] text-slate-400">آیکون پلتفرم</label>
+                  <input type="checkbox" id="togglePlatformIcon" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+                </div>
+                <select id="platformIconSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+                  <option value="none" selected>بدون آیکون</option>
+                  <option value="x">توییتر / X</option>
+                  <option value="instagram">اینستاگرام</option>
+                  <option value="telegram">تلگرام</option>
+                  <option value="youtube">یوتیوب</option>
+                  <option value="threads">تردز (Threads)</option>
+                  <option value="starteach">نماد استارتیچ</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[10px] text-slate-400">دکمه Follow/Dial</label>
+                  <input type="checkbox" id="toggleFollowBtn" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+                </div>
+                <input type="text" id="followBtnText" value="دنبال کردن" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] text-slate-300">منوی سه نقطه (•••) در هدر</span>
+              <input type="checkbox" id="toggleThreeDots" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+            </div>
+
+          </div>
+        </details>
+
+        <!-- BOX 3: VERIFIED BADGE SETTINGS -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-sky-400 flex items-center gap-2">
+              <span>☑️ تنظیمات نشان و تیک تایید (Verified Badge)</span>
+            </span>
             <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-        </summary>
-        <div class="p-3 space-y-2 border-t border-slate-800/80">
-          <div>
-            <label class="text-[10px] text-slate-400 block mb-0.5">عنوان باکس CTA:</label>
-            <input type="text" id="ctaTitleInput" value="دانلود رایگان و تست هوشمند" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-100">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-400 block mb-0.5">توضیحات کوتاه CTA:</label>
-            <input type="text" id="ctaDescInput" value="جهت دریافت هدیه و شروع، همین حالا اقدام کنید" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300">
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-[10px] text-slate-400 block mb-0.5">متن دکمه CTA:</label>
-              <input type="text" id="ctaBtnTextInput" value="مشاهده بیشتر / لینک در بایو 🚀" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-100">
-            </div>
-            <div>
-              <label class="text-[10px] text-slate-400 block mb-0.5">افکت انیمیشن نبض:</label>
-              <select id="ctaPulseSelect" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200">
-                <option value="yes" selected>فعال (Pulse)</option>
-                <option value="no">غیرفعال (ثابت)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <!-- BOX 6: FOOTER & DOMAIN SETTINGS -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-amber-400 flex items-center gap-2">
-            <span>🌐 فوتر، آدرس سایت و موقعیت آن</span>
-          </span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </summary>
-        <div class="p-3 space-y-2.5 border-t border-slate-800/80">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-[11px] text-slate-400">آدرس وب‌سایت / دامنه</label>
-              <input type="checkbox" id="toggleDomain" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
-            </div>
-            <input type="text" id="brandDomain" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none" value="starteach.ir">
-          </div>
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-[11px] text-slate-400">متن سفارشی اضافی فوتر</label>
-              <input type="checkbox" id="toggleFooterCustom" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
-            </div>
-            <input type="text" id="footerCustomInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="تمامی حقوق محفوظ است | starteach.ir">
-          </div>
-          <div>
-            <label class="block text-[10px] text-slate-400 mb-1">چیدمان و موقعیت فوتر</label>
-            <select id="footerAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
-              <option value="left" selected>چپ‌چین (دامنه انگلیسی)</option>
-              <option value="center">وسط‌چین</option>
-              <option value="right">راست‌چین</option>
+          </summary>
+          <div class="p-3 space-y-2 border-t border-slate-800/80">
+            <label class="block text-[11px] text-slate-400 mb-1">انتخاب استایل تیک تایید</label>
+            <select id="verifiedToggle" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+              <option value="insta" selected>تیک آبی رسمی اینستاگرام (Instagram Official Blue)</option>
+              <option value="emerald">سبز اختصاصی استارتیچ (Emerald Badge)</option>
+              <option value="blue">آبی توییتر (Twitter Blue)</option>
+              <option value="gold">طلایی سازمان (Gold Badge)</option>
+              <option value="none">بدون تیک تایید</option>
             </select>
           </div>
-        </div>
-      </details>
+        </details>
 
-      <!-- BOX 7: SOCIAL STATS SETTINGS -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-slate-300 flex items-center gap-2">
-            <span>📊 آمار تعاملات (Social Engagement Stats)</span>
-          </span>
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="toggleStatsBar" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" onclick="event.stopPropagation()">
+        <!-- BOX 4: PROBLEM & SOLUTION BOX SETTINGS -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-amber-400 flex items-center gap-2">
+              <span>⚙️ تنظیمات بخش مشکل (❌) و راهکار (✅)</span>
+            </span>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="toggleProblemSection" class="w-4 h-4 accent-amber-500 rounded cursor-pointer" onclick="event.stopPropagation()">
+              <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </summary>
+          <div class="p-3 space-y-2 border-t border-slate-800/80">
+            <div>
+              <label class="text-[10px] text-slate-400">متن بخش مشکل (❌):</label>
+              <input type="text" id="problemTextInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-rose-200" placeholder="متن مشکل...">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400">متن بخش راهکار (✅):</label>
+              <input type="text" id="solutionTextInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-emerald-200" placeholder="متن راهکار...">
+            </div>
+          </div>
+        </details>
+
+        <!-- BOX 5: CTA BOX SETTINGS -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-sky-400 flex items-center gap-2">
+              <span>🚀 تنظیمات باکس فراخوان اقدام (CTA Box)</span>
+            </span>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="toggleCtaBox" class="w-4 h-4 accent-sky-500 rounded cursor-pointer" onclick="event.stopPropagation()">
+              <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </summary>
+          <div class="p-3 space-y-2 border-t border-slate-800/80">
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-0.5">عنوان باکس CTA:</label>
+              <input type="text" id="ctaTitleInput" value="دانلود رایگان و تست هوشمند" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-0.5">توضیحات کوتاه CTA:</label>
+              <input type="text" id="ctaDescInput" value="جهت دریافت هدیه و شروع، همین حالا اقدام کنید" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-300">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-0.5">متن دکمه CTA:</label>
+                <input type="text" id="ctaBtnTextInput" value="مشاهده بیشتر / لینک در بایو 🚀" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-0.5">افکت انیمیشن نبض:</label>
+                <select id="ctaPulseSelect" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200">
+                  <option value="yes" selected>فعال (Pulse)</option>
+                  <option value="no">غیرفعال (ثابت)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- BOX 6: FOOTER & DOMAIN SETTINGS -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-amber-400 flex items-center gap-2">
+              <span>🌐 فوتر، آدرس سایت و موقعیت آن</span>
+            </span>
             <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-        </summary>
-        <div class="p-3 space-y-2 border-t border-slate-800/80">
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          </summary>
+          <div class="p-3 space-y-2 border-t border-slate-800/80">
             <div>
-              <label class="block text-[10px] text-slate-400 mb-0.5">💬 کامنت</label>
-              <input type="text" id="statComments" value="142" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 font-mono text-center">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[11px] text-slate-400">آدرس وب‌سایت / دامنه</label>
+                <input type="checkbox" id="toggleDomain" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer" checked>
+              </div>
+              <input type="text" id="brandDomain" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none" value="starteach.ir">
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-0.5">🔁 بازنشر</label>
-              <input type="text" id="statRetweets" value="890" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 font-mono text-center">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[11px] text-slate-400">متن سفارشی اضافی فوتر</label>
+                <input type="checkbox" id="toggleFooterCustom" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+              </div>
+              <input type="text" id="footerCustomInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="تمامی حقوق محفوظ است | starteach.ir">
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-0.5">❤️ لایک</label>
-              <input type="text" id="statLikes" value="4.2K" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 font-mono text-center">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-0.5">👁️ بازدید</label>
-              <input type="text" id="statViews" value="28.5K" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 font-mono text-center">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-0.5">🔖 ذخیره</label>
-              <input type="text" id="statBookmarks" value="512" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 font-mono text-center">
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <!-- BOX 8: COLOR PALETTE & CANVAS STYLING -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden" open>
-        <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
-          <span class="text-xs font-bold text-purple-400 flex items-center gap-2">
-            <span>🎨 پالت رنگی سفارشی زنده و الگوی بوم</span>
-          </span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </summary>
-        <div class="p-3 space-y-3 border-t border-slate-800/80">
-          
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">هایلایت (*متن*)</label>
-              <input type="color" id="highlightColor" value="#10b981" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">متن اصلی کارت</label>
-              <input type="color" id="textColor" value="#f8fafc" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">نام برند</label>
-              <input type="color" id="brandNameColor" value="#f8fafc" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">پس‌زمینه کارت</label>
-              <input type="color" id="cardBgColor" value="#0f172a" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">حاشیه / کادر کارت</label>
-              <input type="color" id="cardBorderColor" value="#334155" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 mb-1">پس‌زمینه بوم (Canvas)</label>
-              <input type="color" id="canvasBgColor" value="#020617" class="w-full h-8 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-800/80">
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">الگوی پس‌زمینه بوم</label>
-              <select id="bgPatternSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
-                <option value="grid">شبکه شطرنجی (Grid)</option>
-                <option value="dots">نقطه‌ای (Dots)</option>
-                <option value="glow">درخشش مرکز (Glow)</option>
-                <option value="solid">تک رنگ ساده</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] text-slate-400 mb-1">ابعاد خروجی</label>
-              <select id="aspectRatioSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
-                <option value="9:16">9:16 (ریلز و استوری)</option>
-                <option value="1:1">1:1 (پست مربعی)</option>
-                <option value="16:9">16:9 (بنر/توییتر)</option>
+              <label class="block text-[10px] text-slate-400 mb-1">چیدمان و موقعیت فوتر</label>
+              <select id="footerAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                <option value="left" selected>چپ‌چین (دامنه انگلیسی)</option>
+                <option value="center">وسط‌چین</option>
+                <option value="right">راست‌چین</option>
               </select>
             </div>
           </div>
+        </details>
 
-          <div class="flex items-center justify-between pt-1">
-            <span class="text-xs text-slate-300">موکاپ دکمه‌های اینستاگرام (Reels UI)</span>
-            <input type="checkbox" id="toggleInstaOverlay" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+        <!-- BOX 7: SOCIAL STATS SETTINGS -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <span>📊 آمار تعاملات (Social Engagement Stats)</span>
+            </span>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="toggleStatsBar" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" onclick="event.stopPropagation()">
+              <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </summary>
+          <div class="p-3 space-y-2 border-t border-slate-800/80">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">💬 کامنت</label>
+                <input type="text" id="statComments" value="142" class="w-full bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-xs text-slate-200 font-mono text-center">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">🔁 بازنشر</label>
+                <input type="text" id="statRetweets" value="890" class="w-full bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-xs text-slate-200 font-mono text-center">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">❤️ لایک</label>
+                <input type="text" id="statLikes" value="4.2K" class="w-full bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-xs text-slate-200 font-mono text-center">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">👁️ بازدید</label>
+                <input type="text" id="statViews" value="28.5K" class="w-full bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-xs text-slate-200 font-mono text-center">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">🔖 ذخیره</label>
+                <input type="text" id="statBookmarks" value="512" class="w-full bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-xs text-slate-200 font-mono text-center">
+              </div>
+            </div>
           </div>
+        </details>
 
-        </div>
-      </details>
+        <!-- BOX 8: COLOR PALETTE & CANVAS STYLING -->
+        <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden" open>
+          <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
+            <span class="text-xs font-bold text-purple-400 flex items-center gap-2">
+              <span>🎨 پالت رنگی سفارشی زنده و الگوی بوم</span>
+            </span>
+            <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="p-3 space-y-2.5 border-t border-slate-800/80">
+            
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">هایلایت (*متن*)</label>
+                <input type="color" id="highlightColor" value="#10b981" class="w-full h-7 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">متن اصلی کارت</label>
+                <input type="color" id="textColor" value="#f8fafc" class="w-full h-7 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">نام برند</label>
+                <input type="color" id="brandNameColor" value="#f8fafc" class="w-full h-7 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">پس‌زمینه کارت</label>
+                <input type="color" id="cardBgColor" value="#0f172a" class="w-full h-7 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">حاشیه / کادر کارت</label>
+                <input type="color" id="cardBorderColor" value="#334155" class="w-full h-7 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">پس‌زمینه بوم (Canvas)</label>
+                <input type="color" id="canvasBgColor" value="#020617" class="w-full h-7 bg-slate-950 border border-slate-800 rounded cursor-pointer p-0.5">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80">
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">الگوی پس‌زمینه بوم</label>
+                <select id="bgPatternSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+                  <option value="grid">شبکه شطرنجی (Grid)</option>
+                  <option value="dots">نقطه‌ای (Dots)</option>
+                  <option value="glow">درخشش مرکز (Glow)</option>
+                  <option value="solid">تک رنگ ساده</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-400 mb-0.5">ابعاد خروجی</label>
+                <select id="aspectRatioSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none">
+                  <option value="9:16">9:16 (ریلز و استوری)</option>
+                  <option value="1:1">1:1 (پست مربعی)</option>
+                  <option value="16:9">16:9 (بنر/توییتر)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-slate-300">موکاپ دکمه‌های اینستاگرام (Reels UI)</span>
+              <input type="checkbox" id="toggleInstaOverlay" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+            </div>
+
+          </div>
+        </details>
+
+      </div>
 
     </section>
 
-    <section class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col items-center justify-center min-h-[550px] overflow-hidden relative">
+    <!-- PREVIEW SIDEBAR & LIVE CANVAS -->
+    <section id="previewSidebar" class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-2.5 sm:p-4 shadow-xl flex flex-col items-center justify-center min-h-[480px] overflow-hidden relative w-full max-w-full">
       
       <!-- Canvas Controls Top Bar -->
-      <div class="w-full flex items-center justify-between pb-3 border-b border-slate-800 mb-4 text-xs text-slate-400 flex-wrap gap-2">
-        <span class="flex items-center gap-2">
+      <div class="w-full flex items-center justify-between pb-2.5 border-b border-slate-800 mb-3 text-xs text-slate-400 flex-wrap gap-1.5">
+        <span class="flex items-center gap-1.5 text-xs font-bold text-slate-200">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           پیش‌نمایش زنده خروجی
         </span>
         
-        <div class="flex items-center gap-2">
-          <label class="text-[10px] text-slate-400">مقیاس نمایش:</label>
-          <select id="previewScaleSelect" class="bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-[11px] text-slate-300">
-            <option value="fit" selected>تطبیق خودکار (Fit)</option>
+        <div class="flex items-center gap-1.5">
+          <label class="text-[10px] text-slate-400 hidden sm:inline">زوم:</label>
+          <select id="previewScaleSelect" class="bg-slate-950 border border-slate-800 rounded px-1.5 py-0.5 text-[10px] text-slate-300">
+            <option value="fit" selected>تطبیق (Fit)</option>
             <option value="1">100%</option>
             <option value="0.75">75%</option>
             <option value="0.5">50%</option>
           </select>
-          <span id="themeModeBadge" class="font-mono bg-indigo-500/20 border border-indigo-500/40 px-2 py-0.5 rounded text-[11px] text-indigo-300">🌙 Dark Mode</span>
-          <span id="aspectRatioLabel" class="font-mono bg-slate-800 px-2 py-0.5 rounded text-[11px] text-slate-300">9:16</span>
+          <span id="themeModeBadge" class="font-mono bg-indigo-500/20 border border-indigo-500/40 px-1.5 py-0.5 rounded text-[10px] text-indigo-300">🌙 Dark</span>
+          <span id="aspectRatioLabel" class="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-300">9:16</span>
         </div>
       </div>
 
-      <!-- PREVIEW CONTAINER BOX -->
-      <div class="w-full flex justify-center items-center overflow-auto p-2 min-h-[450px]">
-        <div id="previewWrapper" class="transition-all duration-300 flex items-center justify-center">
+      <!-- PREVIEW CONTAINER BOX (Zero Horizontal Overflow) -->
+      <div id="previewContainer" class="w-full flex justify-center items-center overflow-hidden p-1 min-h-[420px] max-w-full relative">
+        <div id="previewWrapper" class="transition-all duration-300 flex items-center justify-center origin-center">
           
           <!-- TARGET EXPORT NODE (Captured by html2canvas & gifshot) -->
-          <div id="exportTarget" class="bg-slate-950 relative overflow-hidden flex items-center justify-center transition-all p-6 md:p-8 select-none shadow-2xl rounded-3xl">
+          <div id="exportTarget" class="bg-slate-950 relative overflow-hidden flex items-center justify-center transition-all p-5 md:p-8 select-none shadow-2xl rounded-3xl shrink-0">
             
             <div id="bgGlow" class="absolute inset-0 pointer-events-none"></div>
             <div id="bgPattern" class="absolute inset-0 pointer-events-none"></div>
@@ -598,7 +636,7 @@
             </div>
 
             <!-- CARD CONTAINER NODE -->
-            <div id="cardElement" class="w-full max-w-xl rounded-3xl p-6 md:p-8 text-white relative z-10 transition-all border shadow-2xl">
+            <div id="cardElement" class="w-full max-w-xl rounded-3xl p-5 md:p-8 text-white relative z-10 transition-all border shadow-2xl">
               <!-- Rendered dynamically by JS template engine -->
             </div>
 
@@ -611,20 +649,30 @@
 
   </main>
 
+  <!-- STICKY MOBILE BOTTOM FLOATING ACTION BAR -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-2 flex items-center justify-between gap-2 px-4 shadow-2xl">
+    <button onclick="switchMobileTab('preview')" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-100 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-slate-700">
+      <span>👁️ پیش‌نمایش کارت</span>
+    </button>
+    <button onclick="exportPNG()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20">
+      <span>📥 دانلود تصویر PNG</span>
+    </button>
+  </div>
+
   <!-- Toast Notification Container -->
-  <div id="toastNotification" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-emerald-500/40 text-slate-100 px-5 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-medium opacity-0 pointer-events-none transform translate-y-4">
-    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+  <div id="toastNotification" class="fixed bottom-16 lg:bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-emerald-500/40 text-slate-100 px-4 py-2 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-medium opacity-0 pointer-events-none transform translate-y-4 transition-all">
+    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
     <span id="toastText">عملیات با موفقیت انجام شد</span>
   </div>
 
   <!-- Reset Confirmation Modal -->
   <div id="resetModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <h3 class="font-bold text-base text-slate-100">بازنشانی تنظیمات اولیه؟</h3>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 max-w-sm w-full space-y-3.5 shadow-2xl">
+      <h3 class="font-bold text-sm text-slate-100">بازنشانی تنظیمات اولیه؟</h3>
       <p class="text-xs text-slate-400 leading-relaxed">آیا مطمئن هستید که می‌خواهید تمام تنظیمات، رنگ‌ها و متون به حالت اولیه بازگردند؟</p>
-      <div class="flex items-center justify-end gap-2 pt-2">
-        <button id="cancelResetBtn" class="px-4 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">انصراف</button>
-        <button id="confirmResetBtn" class="px-4 py-2 text-xs font-bold bg-rose-500 hover:bg-rose-400 text-white rounded-lg">بله، بازنشانی شود</button>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button id="cancelResetBtn" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">انصراف</button>
+        <button id="confirmResetBtn" class="px-3 py-1.5 text-xs font-bold bg-rose-500 hover:bg-rose-400 text-white rounded-lg">بله، بازنشانی شود</button>
       </div>
     </div>
   </div>
@@ -700,6 +748,7 @@
     const previewScaleSelect = $('previewScaleSelect');
     const themeModeBadge = $('themeModeBadge');
     const aspectRatioLabel = $('aspectRatioLabel');
+    const previewContainer = $('previewContainer');
     const previewWrapper = $('previewWrapper');
     const exportTarget = $('exportTarget');
     const bgGlow = $('bgGlow');
@@ -799,14 +848,14 @@
     let appState = { ...DEFAULT_CONFIG };
 
     function loadState() {
-      const saved = localStorage.getItem('starteach_studio_v8.5');
+      const saved = localStorage.getItem('starteach_studio_v9.0');
       if (saved) {
         try { appState = { ...DEFAULT_CONFIG, ...JSON.parse(saved) }; } catch(e){}
       }
     }
 
     function saveState() {
-      localStorage.setItem('starteach_studio_v8.5', JSON.stringify(appState));
+      localStorage.setItem('starteach_studio_v9.0', JSON.stringify(appState));
     }
 
     function showToast(message) {
@@ -830,10 +879,7 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
 
-      // Replace hashtags (Space or line-start required before #)
       escaped = escaped.replace(/(^|\s)#([\u0600-\u06FF\w_]+)/g, '$1<span class="text-emerald-400 font-bold">#$2</span>');
-
-      // Replace highlights *text* using inline styles from appState
       escaped = escaped.replace(/\*([^*]+)\*/g, `<span style="color:${appState.highlightColor}; font-weight: 800;">$1</span>`);
 
       return escaped;
@@ -846,6 +892,39 @@
         syncControlsFromState();
         renderPreview();
         showToast("طرح رنگ تغییر کرد!");
+      }
+    }
+
+    // Mobile Navigation Tab Switcher
+    function switchMobileTab(tabName) {
+      const sidebar = $('controlsSidebar');
+      const preview = $('previewSidebar');
+      const secGroup = $('secondarySettingsGroup');
+
+      const btnContent = $('tabContent');
+      const btnSettings = $('tabSettings');
+      const btnPreview = $('tabPreview');
+
+      [btnContent, btnSettings, btnPreview].forEach(btn => {
+        if (btn) btn.classList.remove('active', 'text-slate-200');
+        if (btn) btn.classList.add('text-slate-400');
+      });
+
+      if (tabName === 'content') {
+        if (sidebar) sidebar.classList.remove('hidden');
+        if (preview) preview.classList.add('hidden', 'lg:flex');
+        if (secGroup) secGroup.classList.add('hidden', 'lg:block');
+        if (btnContent) { btnContent.classList.add('active'); btnContent.classList.remove('text-slate-400'); }
+      } else if (tabName === 'settings') {
+        if (sidebar) sidebar.classList.remove('hidden');
+        if (preview) preview.classList.add('hidden', 'lg:flex');
+        if (secGroup) secGroup.classList.remove('hidden');
+        if (btnSettings) { btnSettings.classList.add('active'); btnSettings.classList.remove('text-slate-400'); }
+      } else if (tabName === 'preview') {
+        if (sidebar) sidebar.classList.add('hidden', 'lg:block');
+        if (preview) preview.classList.remove('hidden');
+        if (btnPreview) { btnPreview.classList.add('active'); btnPreview.classList.remove('text-slate-400'); }
+        adjustPreviewScale();
       }
     }
 
@@ -916,7 +995,32 @@
         if (logoStatus) logoStatus.textContent = 'تصویر سفارشی بارگذاری شده';
       } else {
         if (removeLogoBtn) removeLogoBtn.classList.add('hidden');
-        if (logoStatus) logoStatus.textContent = 'لود از icon.png';
+        if (logoStatus) logoStatus.textContent = 'پیش‌فرض: icon.png';
+      }
+    }
+
+    function adjustPreviewScale() {
+      if (!previewContainer || !previewWrapper || !exportTarget || !previewScaleSelect) return;
+      
+      const selectedVal = previewScaleSelect.value;
+      if (selectedVal === 'fit') {
+        const containerWidth = previewContainer.clientWidth - 16;
+        const targetWidth = exportTarget.offsetWidth || 380;
+        
+        if (containerWidth > 0 && targetWidth > 0) {
+          const fitScale = Math.min(1, Math.max(0.35, containerWidth / targetWidth));
+          previewWrapper.style.transform = `scale(${fitScale})`;
+          const targetHeight = exportTarget.offsetHeight || 675;
+          previewWrapper.style.height = `${targetHeight * fitScale}px`;
+          previewWrapper.style.width = `${targetWidth * fitScale}px`;
+        }
+      } else {
+        const scale = parseFloat(selectedVal);
+        previewWrapper.style.transform = `scale(${scale})`;
+        const targetWidth = exportTarget.offsetWidth || 380;
+        const targetHeight = exportTarget.offsetHeight || 675;
+        previewWrapper.style.height = `${targetHeight * scale}px`;
+        previewWrapper.style.width = `${targetWidth * scale}px`;
       }
     }
 
@@ -926,17 +1030,17 @@
       exportTarget.style.backgroundColor = appState.canvasBgColor || '#020617';
 
       if (themeModeBadge) {
-        themeModeBadge.textContent = appState.themeMode === 'light' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        themeModeBadge.textContent = appState.themeMode === 'light' ? '☀️ Light' : '🌙 Dark';
         themeModeBadge.className = appState.themeMode === 'light' 
-          ? 'font-mono bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 rounded text-[11px] text-amber-300'
-          : 'font-mono bg-indigo-500/20 border border-indigo-500/40 px-2 py-0.5 rounded text-[11px] text-indigo-300';
+          ? 'font-mono bg-amber-500/20 border border-amber-500/40 px-1.5 py-0.5 rounded text-[10px] text-amber-300'
+          : 'font-mono bg-indigo-500/20 border border-indigo-500/40 px-1.5 py-0.5 rounded text-[10px] text-indigo-300';
       }
 
       if (aspectRatioLabel) {
         aspectRatioLabel.textContent = appState.aspectRatio || '9:16';
       }
 
-      exportTarget.className = "bg-slate-950 relative overflow-hidden flex items-center justify-center transition-all p-6 md:p-8 select-none shadow-2xl rounded-3xl ";
+      exportTarget.className = "bg-slate-950 relative overflow-hidden flex items-center justify-center transition-all p-5 md:p-8 select-none shadow-2xl rounded-3xl shrink-0 ";
       if (appState.aspectRatio === '1:1') {
         exportTarget.style.width = '480px';
         exportTarget.style.height = '480px';
@@ -968,7 +1072,7 @@
         }
       }
 
-      // Construct HTML sub-templates safely
+      // Construct HTML sub-templates
       let logoHTML = '';
       if (appState.showLogo) {
         if (appState.logoData) {
@@ -1075,7 +1179,6 @@
       cardElement.style.backgroundColor = appState.cardBgColor;
       cardElement.style.borderColor = appState.cardBorderColor;
 
-      // Render Selected Template with Full Color Palette Integration
       if (appState.template === 'simpleDark' || appState.template === 'simpleLight') {
         const isLight = appState.template === 'simpleLight';
         const bgColor = isLight ? '#ffffff' : appState.cardBgColor;
@@ -1241,7 +1344,7 @@
         `;
       } else if (appState.template === 'code') {
         cardElement.innerHTML = `
-          <div class="bg-slate-900 -mx-6 -mt-6 p-3 mb-4 border-b border-slate-800 flex items-center justify-between rounded-t-3xl">
+          <div class="bg-slate-900 -mx-5 -mt-5 md:-mx-8 md:-mt-8 p-3 mb-4 border-b border-slate-800 flex items-center justify-between rounded-t-3xl">
             <div class="flex items-center gap-1.5">
               <span class="w-3 h-3 rounded-full bg-rose-500"></span>
               <span class="w-3 h-3 rounded-full bg-amber-500"></span>
@@ -1308,23 +1411,6 @@
       }
       
       adjustPreviewScale();
-    }
-
-    function adjustPreviewScale() {
-      if (!previewWrapper || !exportTarget || !previewScaleSelect) return;
-      const selectedVal = previewScaleSelect.value;
-      if (selectedVal === 'fit') {
-        const containerWidth = previewWrapper.parentElement.clientWidth - 20;
-        const targetWidth = exportTarget.clientWidth;
-        if (containerWidth < targetWidth) {
-          const scale = (containerWidth / targetWidth).toFixed(2);
-          previewWrapper.style.transform = `scale(${scale})`;
-        } else {
-          previewWrapper.style.transform = 'scale(1)';
-        }
-      } else {
-        previewWrapper.style.transform = `scale(${selectedVal})`;
-      }
     }
 
     function attachEventListeners() {
@@ -1474,7 +1560,7 @@
       }
       if (confirmResetBtn && resetModal) {
         confirmResetBtn.addEventListener('click', () => {
-          localStorage.removeItem('starteach_studio_v8.5');
+          localStorage.removeItem('starteach_studio_v9.0');
           appState = { ...DEFAULT_CONFIG };
           syncControlsFromState();
           renderPreview();
@@ -1575,6 +1661,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
       syncControlsFromState();
+      switchMobileTab('content');
       renderPreview();
       attachEventListeners();
     });
