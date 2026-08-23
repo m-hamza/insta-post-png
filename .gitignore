@@ -1,11 +1,29 @@
 ```
-# Font files
+# Build artifacts
+dist/
+build/
+*.min.js
+*.css
 *.ttf
 *.woff2
 
-# JavaScript libraries
-*.min.js
+# Dependencies
+node_modules/
 
-# CSS files
-*.css
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
 ```

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استودیو پیشرفته تولید ریلز و کارت استارتیچ | Starteach Reel & Card Studio Pro</title>
   
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS Local -->
+  <script src="tailwind.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -26,17 +26,12 @@
     }
   </script>
 
-  <!-- HTML2Canvas & Gifshot for HD PNG & Animated GIF Export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+  <!-- HTML2Canvas & Gifshot Local for HD PNG & Animated GIF Export -->
+  <script src="html2canvas.min.js"></script>
+  <script src="gifshot.min.js"></script>
 
-  <!-- Google Fonts & Persian Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.0/dist/font-face.css" rel="stylesheet" type="text/css" />
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/lalezar-font@v2.0.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+  <!-- Local Fonts -->
+  <link href="fonts.css" rel="stylesheet" type="text/css" />
 
   <style>
     .font-vazir { font-family: 'Vazirmatn', sans-serif; }
@@ -1487,8 +1482,8 @@
 
         const canvas = await html2canvas(exportTarget, {
           scale: 3.0,
-          useCORS: true,
-          allowTaint: true,
+          useCORS: false,
+          allowTaint: false,
           backgroundColor: null,
           logging: false
         });
@@ -1522,8 +1517,8 @@
         for (let i = 0; i < frameCount; i++) {
           const canvas = await html2canvas(exportTarget, {
             scale: 1.5,
-            useCORS: true,
-            allowTaint: true,
+            useCORS: false,
+            allowTaint: false,
             backgroundColor: null,
             logging: false
           });
