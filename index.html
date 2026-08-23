@@ -311,6 +311,7 @@
                 <option value="problem">۵. مشکل / راهکار (❌/✅)</option>
                 <option value="code">۶. Code / Tech Tip (ترمینال)</option>
                 <option value="iosNotification">۷. اعلان آیفون / iOS Notification 📱</option>
+                <option value="quoteBox">۸. نقل قول / Quote Card 💬</option>
               </select>
             </div>
             <div>
@@ -1238,6 +1239,59 @@
           ${problemSectionHTML}
           ${ctaBoxHTML}
           ${footerCustomHTML ? `<div class="border-t border-slate-800/80 pt-2 mt-3 ${footerAlignClass}">${footerCustomHTML}</div>` : ''}
+        `;
+      } else if (appState.template === 'quoteBox') {
+        cardElement.style.backgroundColor = appState.cardBgColor;
+        cardElement.style.borderColor = appState.cardBorderColor;
+
+        cardElement.innerHTML = `
+          <div class="relative p-4 md:p-6 rounded-2xl border-2 border-dashed shadow-inner" style="border-color:${appState.cardBorderColor}">
+            <!-- Top-Left Quote Icon Badge -->
+            <div class="absolute -top-4 right-6 px-3 py-0.5 rounded-md font-serif text-2xl font-black leading-none shadow-md" style="background-color:${appState.cardBgColor}; color:${appState.highlightColor}; border: 1px solid ${appState.cardBorderColor}">
+              “
+            </div>
+
+            <!-- Header Section -->
+            <div class="flex items-center justify-between mb-4 pt-2">
+              <div class="flex items-center gap-3 ${headerAlignClass}">
+                ${logoHTML}
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    ${appState.showBrandName ? `<span class="font-bold text-base block" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
+                    ${badgeHTML}
+                  </div>
+                  ${appState.showBrandHandle && appState.brandHandle ? `<span class="text-xs font-mono opacity-60 block dir-ltr">${appState.brandHandle}</span>` : ''}
+                  ${sloganHTML}
+                  ${headerExtraHTML}
+                </div>
+              </div>
+              <div class="${footerAlignClass}">
+                ${domainHTML}
+              </div>
+            </div>
+
+            ${subTitleBadgeHTML ? `<div class="mb-2">${subTitleBadgeHTML}</div>` : ''}
+
+            <!-- Main Quote Body -->
+            <div class="my-5 ${dirClass} px-2">
+              <p class="${appState.fontFamily} ${appState.fontSize} leading-relaxed font-semibold whitespace-pre-line" style="color:${appState.textColor}">
+                ${parseHighlights(appState.cardContent)}
+              </p>
+            </div>
+
+            ${problemSectionHTML}
+            ${ctaBoxHTML}
+
+            <!-- Footer & Bottom-Right Quote Icon -->
+            <div class="border-t border-slate-800/60 pt-3 mt-4 flex items-center justify-between">
+              <div class="${footerAlignClass}">
+                ${footerCustomHTML}
+              </div>
+              <div class="font-serif text-3xl font-black leading-none opacity-80" style="color:${appState.highlightColor}">
+                ”
+              </div>
+            </div>
+          </div>
         `;
       }
       
