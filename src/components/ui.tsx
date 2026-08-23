@@ -1,6 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, CheckCircle2, Info, X } from "lucide-react";
+import { useI18n } from "../lib/i18n";
 
 export function cx(...parts: (string | false | null | undefined)[]) {
   return parts.filter(Boolean).join(" ");
@@ -72,6 +73,7 @@ export function TextInput({
 
 /* ---------- سوییچ ---------- */
 export function ToggleSwitch({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label?: string }) {
+  const { rtl } = useI18n();
   return (
     <button
       type="button"
@@ -87,8 +89,8 @@ export function ToggleSwitch({ on, onChange, label }: { on: boolean; onChange: (
         )}
       >
         <span
-          className="absolute top-[2px] right-[2px] block h-[20px] w-[20px] rounded-full bg-mist-100 shadow transition-transform duration-300"
-          style={{ transform: on ? "translateX(-20px)" : "translateX(0)" }}
+          className="absolute top-[2px] start-[2px] block h-[20px] w-[20px] rounded-full bg-mist-100 shadow transition-transform duration-300"
+          style={{ transform: on ? `translateX(${rtl ? -20 : 20}px)` : "translateX(0)" }}
         />
       </span>
       {label && <span className="text-xs font-semibold text-mist-300">{label}</span>}
@@ -106,6 +108,7 @@ export function Segmented<T extends string>({
   onChange: (v: T) => void;
   options: { value: T; label: ReactNode; title?: string }[];
 }) {
+  const { rtl } = useI18n();
   const idx = Math.max(0, options.findIndex((o) => o.value === value));
   const n = options.length;
   return (
@@ -115,7 +118,11 @@ export function Segmented<T extends string>({
       >      <span
         aria-hidden
         className="absolute top-1 bottom-1 rounded-lg bg-ink-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-transform duration-300 ease-out"
-        style={{ width: `calc((100% - 8px) / ${n})`, right: 4, transform: `translateX(${-idx * 100}%)` }}
+        style={{
+          width: `calc((100% - 8px) / ${n})`,
+          insetInlineStart: 4,
+          transform: `translateX(${(rtl ? -idx : idx) * 100}%)`,
+        }}
       />
       {options.map((o) => (
         <button
@@ -147,6 +154,7 @@ export function Sheet({
   title: string;
   children: ReactNode;
 }) {
+  const { t } = useI18n();
   return (
     <AnimatePresence>
       {open && (
@@ -173,7 +181,7 @@ export function Sheet({
                   type="button"
                   onClick={onClose}
                   className="rounded-lg p-2 text-mist-400 transition hover:bg-ink-700 hover:text-mist-100"
-                  aria-label="بستن"
+                  aria-label={t("sheet.close")}
                 >
                   <X className="h-4.5 w-4.5" />
                 </button>
@@ -191,16 +199,17 @@ export function Sheet({
 export interface ToastItem {
   id: number;
   kind: "success" | "error" | "info";
-  text: string;
+  key: string;
 }
 
 export function Toasts({ items }: { items: ToastItem[] }) {
+  const { t } = useI18n();
   return (
     <div className="pointer-events-none fixed inset-x-0 top-16 z-[110] flex flex-col items-center gap-2 px-4">
       <AnimatePresence>
-        {items.map((t) => (
+        {items.map((toast) => (
           <motion.div
-            key={t.id}
+            key={toast.id}
             layout
             initial={{ opacity: 0, y: -14, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -208,10 +217,10 @@ export function Toasts({ items }: { items: ToastItem[] }) {
             transition={{ type: "spring", damping: 24, stiffness: 380 }}
             className="flex max-w-full items-center gap-2.5 rounded-xl border border-ink-600 bg-ink-800/95 px-4 py-2.5 text-[13px] font-semibold text-mist-100 shadow-xl backdrop-blur"
           >
-            {t.kind === "success" && <CheckCircle2 className="h-4.5 w-4.5 shrink-0 text-brand-400" />}
-            {t.kind === "error" && <AlertCircle className="h-4.5 w-4.5 shrink-0 text-rosex-400" />}
-            {t.kind === "info" && <Info className="h-4.5 w-4.5 shrink-0 text-skyx-400" />}
-            <span className="truncate">{t.text}</span>
+            {toast.kind === "success" && <CheckCircle2 className="h-4.5 w-4.5 shrink-0 text-brand-400" />}
+            {toast.kind === "error" && <AlertCircle className="h-4.5 w-4.5 shrink-0 text-rosex-400" />}
+            {toast.kind === "info" && <Info className="h-4.5 w-4.5 shrink-0 text-skyx-400" />}
+            <span className="truncate">{t(toast.key)}</span>
           </motion.div>
         ))}
       </AnimatePresence>

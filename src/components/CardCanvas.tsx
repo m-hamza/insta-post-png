@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { CardConfig } from "../lib/config";
 import { FONTS, RATIOS, SIZE_MAP } from "../lib/config";
 import { hexA, initialsOf, splitProblemSolution } from "../lib/utils";
+import { useI18n } from "../lib/i18n";
 
 /* ================= ابزارهای داخلی ================= */
 
@@ -205,6 +206,7 @@ function FrameLayers({ config }: { config: CardConfig }) {
 /* ================= قالب: توییت شیشه‌ای ================= */
 
 function TweetCard({ config, frameW, frameH }: { config: CardConfig; frameW: number; frameH: number }) {
+  const { t } = useI18n();
   const acc = config.accent;
   const wide = frameW > frameH;
   const cardW = wide ? Math.min(frameW - 260, 1360) : Math.min(frameW - 150, 950);
@@ -244,7 +246,7 @@ function TweetCard({ config, frameW, frameH }: { config: CardConfig; frameW: num
                   lineHeight: 1.3,
                 }}
               >
-                {config.brandName || "نام برند"}
+                {config.brandName || t("card.brandFallback")}
               </span>
               <Badge config={config} size={wide ? 44 : 40} />
             </div>
@@ -298,7 +300,7 @@ function TweetCard({ config, frameW, frameH }: { config: CardConfig; frameW: num
         {hasContent ? (
           <Highlight text={config.content} accent={acc} />
         ) : (
-          <span>اینجا متن کارت نوشته می‌شود…</span>
+          <span>{t("card.ph.tweet")}</span>
         )}
       </div>
 
@@ -343,6 +345,7 @@ function TweetCard({ config, frameW, frameH }: { config: CardConfig; frameW: num
 /* ================= قالب: قلاب ریلز ================= */
 
 function HookCard({ config, frameW, frameH }: { config: CardConfig; frameW: number; frameH: number }) {
+  const { t } = useI18n();
   const acc = config.accent;
   const wide = frameW > frameH;
   const size = SIZE_MAP.hook[config.size];
@@ -417,7 +420,7 @@ function HookCard({ config, frameW, frameH }: { config: CardConfig; frameW: numb
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ fontFamily: "'Vazirmatn', sans-serif", fontWeight: 700, fontSize: 37, color: "#f1f6fa" }}>
-              {config.brandName || "نام برند"}
+              {config.brandName || t("card.brandFallback")}
             </span>
             <Badge config={config} size={34} />
           </div>
@@ -450,7 +453,7 @@ function HookCard({ config, frameW, frameH }: { config: CardConfig; frameW: numb
           {hasContent ? (
             <Highlight text={config.content} accent={acc} weight={400} glow />
           ) : (
-            <span>تیتر جنجالی ویدیو را اینجا بنویس…</span>
+            <span>{t("card.ph.hook")}</span>
           )}
         </div>
       </div>
@@ -513,6 +516,7 @@ function SolutionPanel({
   size: number;
   horizontal: boolean;
 }) {
+  const { t } = useI18n();
   const has = text.trim().length > 0;
   return (
     <div
@@ -564,13 +568,14 @@ function SolutionPanel({
           fontWeight: 500,
         }}
       >
-        {has ? <Highlight text={text} accent={config.accent} /> : <span>متن این بخش خالی است…</span>}
+        {has ? <Highlight text={text} accent={config.accent} /> : <span>{t("card.ph.problem")}</span>}
       </div>
     </div>
   );
 }
 
 function ProblemCard({ config, frameW, frameH }: { config: CardConfig; frameW: number; frameH: number }) {
+  const { t } = useI18n();
   const acc = config.accent;
   // در قاب مربعی و افقی، پنل‌ها کنار هم می‌ایستند تا در ارتفاع جا شوند
   const wide = frameW >= frameH;
@@ -595,7 +600,7 @@ function ProblemCard({ config, frameW, frameH }: { config: CardConfig; frameW: n
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ fontFamily: "'Vazirmatn', sans-serif", fontWeight: 700, fontSize: 41, color: "#f1f6fa" }}>
-              {config.brandName || "نام برند"}
+              {config.brandName || t("card.brandFallback")}
             </span>
             <Badge config={config} size={36} />
           </div>
@@ -619,7 +624,7 @@ function ProblemCard({ config, frameW, frameH }: { config: CardConfig; frameW: n
         <SolutionPanel
           config={config}
           tint="#f2788f"
-          label="مشکل"
+          label={t("card.problem")}
           kind="x"
           text={problem}
           size={size}
@@ -649,7 +654,7 @@ function ProblemCard({ config, frameW, frameH }: { config: CardConfig; frameW: n
         <SolutionPanel
           config={config}
           tint={acc}
-          label="راهکار"
+          label={t("card.solution")}
           kind="check"
           text={solution}
           size={size}
@@ -668,6 +673,7 @@ function ProblemCard({ config, frameW, frameH }: { config: CardConfig; frameW: n
 /* ================= قالب: نکته‌ی کد ================= */
 
 function CodeCard({ config, frameW, frameH }: { config: CardConfig; frameW: number; frameH: number }) {
+  const { t } = useI18n();
   const acc = config.accent;
   const wide = frameW > frameH;
   const size = SIZE_MAP.code[config.size];
@@ -754,7 +760,7 @@ function CodeCard({ config, frameW, frameH }: { config: CardConfig; frameW: numb
           }}
         >
           {lines.length === 0 ? (
-            <div style={{ color: "#55677c", fontSize: size * 0.85 }}>{"// کد یا نکته را اینجا بنویس…"}</div>
+            <div style={{ color: "#55677c", fontSize: size * 0.85 }}>{t("card.ph.code")}</div>
           ) : (
             lines.map((line, i) => {
               const isComment = line.trim().startsWith("//");
@@ -788,7 +794,7 @@ function CodeCard({ config, frameW, frameH }: { config: CardConfig; frameW: numb
           <CanvasAvatar config={config} size={62} rounded />
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ fontFamily: "'Vazirmatn', sans-serif", fontWeight: 700, fontSize: 31, color: "#f1f6fa" }}>
-              {config.brandName || "نام برند"}
+              {config.brandName || t("card.brandFallback")}
             </span>
             <Badge config={config} size={28} />
           </div>
