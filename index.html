@@ -71,6 +71,7 @@
 
 <body class="bg-slate-950 text-slate-100 font-vazir min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 pb-20 lg:pb-0">
 
+  <!-- Header Bar -->
   <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-3 md:px-6 py-2.5">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5">
@@ -80,9 +81,9 @@
         <div>
           <h1 class="font-bold text-sm md:text-base text-slate-100 flex items-center gap-2">
             استودیو ریلز و کارت استارتیچ
-            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full hidden sm:inline-block">v8.0 Modular Pro</span>
+            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full hidden sm:inline-block">v8.5 Pro Local</span>
           </h1>
-          <p class="text-[11px] text-slate-400 hidden md:block">تنظیمات کامل هدر، لوگو، تیک تایید، فوتر و قالب‌ها در باکس‌های بازشوی اختصاصی</p>
+          <p class="text-[11px] text-slate-400 hidden md:block">طراحی متوازن، جاستیفای متن، پالت‌های رنگی و ذخیره دائمی لوکال</p>
         </div>
       </div>
 
@@ -119,7 +120,7 @@
       <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
         <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-          تنظیمات پیشرفته لایه‌ها و کارت
+          تنظیمات لایه‌ها، موقعیت و رنگ
         </h2>
         <button id="openResetModalBtn" class="text-[10px] text-slate-400 hover:text-rose-400 underline">بازنشانی تنظیمات</button>
       </div>
@@ -138,12 +139,11 @@
         </select>
       </div>
 
-      
       <!-- BOX 1: LOGO & HEADER SETTINGS -->
       <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden" open>
         <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
           <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
-            <span>🖼️ تنظیمات لوگو، هدر و نام برند</span>
+            <span>🖼️ لوگو، هدر، موقعیت و جهت برند</span>
           </span>
           <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </summary>
@@ -157,8 +157,8 @@
           <!-- Custom Logo Upload Box -->
           <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
             <div class="flex items-center justify-between">
-              <label class="text-[11px] font-medium text-slate-300">تصویر لوگوی اختصاصی</label>
-              <button id="removeLogoBtn" class="text-[10px] text-rose-400 hover:underline hidden">حذف عکس</button>
+              <label class="text-[11px] font-medium text-slate-300">تصویر لوگوی اختصاصی (پیش‌فرض: icon.png)</label>
+              <button id="removeLogoBtn" class="text-[10px] text-rose-400 hover:underline hidden">حذف عکس آپلودی</button>
             </div>
             <div class="flex items-center gap-3">
               <input type="file" id="logoInput" accept="image/*" class="hidden">
@@ -166,7 +166,7 @@
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 آپلود لوگوی جدید
               </button>
-              <span id="logoStatus" class="text-[10px] text-slate-400">لوگوی متنی فعال است</span>
+              <span id="logoStatus" class="text-[10px] text-slate-400">لود از icon.png</span>
             </div>
           </div>
 
@@ -184,6 +184,25 @@
                 <input type="checkbox" id="toggleBrandHandle" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
               </div>
               <input type="text" id="brandHandle" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-mono dir-ltr focus:border-emerald-500 focus:outline-none" value="@starteach.ir">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">چیدمان و جهت هدر</label>
+              <select id="headerAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                <option value="right" selected>راست‌چین (فارسی)</option>
+                <option value="center">وسط‌چین</option>
+                <option value="left">چپ‌چین (انگلیسی)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">چیدمان شعار برند</label>
+              <select id="sloganAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                <option value="right" selected>راست‌چین</option>
+                <option value="center">وسط‌چین</option>
+                <option value="left">چپ‌چین</option>
+              </select>
             </div>
           </div>
 
@@ -268,7 +287,7 @@
       <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden" open>
         <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
           <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
-            <span>✏️ متن اصلی، قالب ساختاری و تایپوگرافی</span>
+            <span>✏️ متن اصلی، تراز جاستیفای و تایپوگرافی</span>
           </span>
           <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </summary>
@@ -295,10 +314,12 @@
               </select>
             </div>
             <div>
-              <label class="block text-[11px] text-slate-400 mb-1">جهت و چینش متن</label>
+              <label class="block text-[11px] text-slate-400 mb-1">جهت و چینش متن (با جاستیفای)</label>
               <select id="textDirectionSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
-                <option value="rtl-right" selected>راست‌چین (RTL)</option>
+                <option value="rtl-justify" selected>تراز از دو طرف / جاستیفای (RTL Justify)</option>
+                <option value="rtl-right">راست‌چین ساده (RTL)</option>
                 <option value="rtl-center">وسط‌چین (RTL)</option>
+                <option value="ltr-justify">تراز از دو طرف / جاستیفای (LTR Justify)</option>
                 <option value="ltr-left">چپ‌چین (LTR)</option>
                 <option value="ltr-center">وسط‌چین (LTR)</option>
               </select>
@@ -393,7 +414,7 @@
       <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
         <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
           <span class="text-xs font-bold text-amber-400 flex items-center gap-2">
-            <span>🌐 تنظیمات فوتر (آدرس سایت و متن اضافه)</span>
+            <span>🌐 فوتر، آدرس سایت و موقعیت آن</span>
           </span>
           <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </summary>
@@ -411,6 +432,14 @@
               <input type="checkbox" id="toggleFooterCustom" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
             </div>
             <input type="text" id="footerCustomInput" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none" placeholder="تمامی حقوق محفوظ است | starteach.ir">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">چیدمان و موقعیت فوتر</label>
+            <select id="footerAlignSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="left" selected>چپ‌چین (دامنه انگلیسی)</option>
+              <option value="center">وسط‌چین</option>
+              <option value="right">راست‌چین</option>
+            </select>
           </div>
         </div>
       </details>
@@ -453,10 +482,10 @@
       </details>
 
       <!-- BOX 8: COLOR PALETTE & CANVAS STYLING -->
-      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden">
+      <details class="group bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden" open>
         <summary class="flex items-center justify-between p-3 cursor-pointer select-none bg-slate-900/80 hover:bg-slate-800/80 transition">
           <span class="text-xs font-bold text-purple-400 flex items-center gap-2">
-            <span>🎨 پالت رنگی سفارشی و الگوی بوم</span>
+            <span>🎨 پالت رنگی سفارشی زنده و الگوی بوم</span>
           </span>
           <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </summary>
@@ -591,7 +620,7 @@
   <div id="resetModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
       <h3 class="font-bold text-base text-slate-100">بازنشانی تنظیمات اولیه؟</h3>
-      <p class="text-xs text-slate-400 leading-relaxed">آیا مطمئن هستید که می‌خواهید تمام رنگ‌ها و متون به حالت اولیه بازگردند؟</p>
+      <p class="text-xs text-slate-400 leading-relaxed">آیا مطمئن هستید که می‌خواهید تمام تنظیمات، رنگ‌ها و متون به حالت اولیه بازگردند؟</p>
       <div class="flex items-center justify-end gap-2 pt-2">
         <button id="cancelResetBtn" class="px-4 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">انصراف</button>
         <button id="confirmResetBtn" class="px-4 py-2 text-xs font-bold bg-rose-500 hover:bg-rose-400 text-white rounded-lg">بله، بازنشانی شود</button>
@@ -615,6 +644,10 @@
     const logoInput = $('logoInput');
     const removeLogoBtn = $('removeLogoBtn');
     const logoStatus = $('logoStatus');
+
+    const headerAlignSelect = $('headerAlignSelect');
+    const sloganAlignSelect = $('sloganAlignSelect');
+    const footerAlignSelect = $('footerAlignSelect');
 
     const toggleBrandSlogan = $('toggleBrandSlogan');
     const toggleHeaderExtra = $('toggleHeaderExtra');
@@ -711,8 +744,12 @@
       platformIcon: "none",
       followBtnText: "دنبال کردن",
       
+      headerAlign: "right",
+      sloganAlign: "right",
+      footerAlign: "left",
+
       template: "tweet",
-      textDirection: "rtl-right",
+      textDirection: "rtl-justify",
       subTitle: "",
       problemText: "",
       solutionText: "",
@@ -761,14 +798,14 @@
     let appState = { ...DEFAULT_CONFIG };
 
     function loadState() {
-      const saved = localStorage.getItem('starteach_studio_v8');
+      const saved = localStorage.getItem('starteach_studio_v8.5');
       if (saved) {
         try { appState = { ...DEFAULT_CONFIG, ...JSON.parse(saved) }; } catch(e){}
       }
     }
 
     function saveState() {
-      localStorage.setItem('starteach_studio_v8', JSON.stringify(appState));
+      localStorage.setItem('starteach_studio_v8.5', JSON.stringify(appState));
     }
 
     function showToast(message) {
@@ -784,7 +821,7 @@
       }, 2500);
     }
 
-    // Safe Highlight & Hashtag Parser (prevents HTML attribute breakage)
+    // Safe Highlight & Hashtag Parser
     function parseHighlights(text) {
       if (!text) return '';
       let escaped = text
@@ -795,7 +832,7 @@
       // Replace hashtags (Space or line-start required before #)
       escaped = escaped.replace(/(^|\s)#([\u0600-\u06FF\w_]+)/g, '$1<span class="text-emerald-400 font-bold">#$2</span>');
 
-      // Replace highlights *text*
+      // Replace highlights *text* using inline styles from appState
       escaped = escaped.replace(/\*([^*]+)\*/g, `<span style="color:${appState.highlightColor}; font-weight: 800;">$1</span>`);
 
       return escaped;
@@ -822,6 +859,10 @@
       if (platformIconSelect) platformIconSelect.value = appState.platformIcon || 'none';
       if (verifiedToggle) verifiedToggle.value = appState.verifiedType || 'insta';
 
+      if (headerAlignSelect) headerAlignSelect.value = appState.headerAlign || 'right';
+      if (sloganAlignSelect) sloganAlignSelect.value = appState.sloganAlign || 'right';
+      if (footerAlignSelect) footerAlignSelect.value = appState.footerAlign || 'left';
+
       if (toggleBrandSlogan) toggleBrandSlogan.checked = !!appState.showBrandSlogan;
       if (toggleHeaderExtra) toggleHeaderExtra.checked = !!appState.showHeaderExtra;
       if (toggleFooterCustom) toggleFooterCustom.checked = !!appState.showFooterCustom;
@@ -837,7 +878,7 @@
 
       if (fontFamilySelect) fontFamilySelect.value = appState.fontFamily || 'font-vazir';
       if (fontSizeSelect) fontSizeSelect.value = appState.fontSize || 'text-xl';
-      if (textDirectionSelect) textDirectionSelect.value = appState.textDirection || 'rtl-right';
+      if (textDirectionSelect) textDirectionSelect.value = appState.textDirection || 'rtl-justify';
 
       if (statCommentsInput) statCommentsInput.value = appState.statComments || '0';
       if (statRetweetsInput) statRetweetsInput.value = appState.statRetweets || '0';
@@ -871,10 +912,10 @@
 
       if (appState.logoData) {
         if (removeLogoBtn) removeLogoBtn.classList.remove('hidden');
-        if (logoStatus) logoStatus.textContent = "تصویر لوگو فعال است";
+        if (logoStatus) logoStatus.textContent = "تصویر سفارشی لود شد";
       } else {
         if (removeLogoBtn) removeLogoBtn.classList.add('hidden');
-        if (logoStatus) logoStatus.textContent = "لوگوی متنی فعال است";
+        if (logoStatus) logoStatus.textContent = "لود از icon.png";
       }
     }
 
@@ -934,19 +975,19 @@
       const followBtnHTML = appState.showFollowBtn ? `<span class="text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400">${appState.followBtnText || 'دنبال کردن'}</span>` : '';
       const threeDotsHTML = appState.showThreeDots ? `<span class="text-slate-400 font-bold tracking-widest text-sm px-1">•••</span>` : '';
 
+      // Default icon rendering from icon.png or fallback
       let logoHTML = '';
       if (appState.showLogo) {
-        if (appState.logoData) {
-          logoHTML = `<div class="w-12 h-12 rounded-2xl p-[2px] shrink-0 bg-gradient-to-tr from-emerald-500 to-teal-400">
-            <img src="${appState.logoData}" class="w-full h-full object-cover rounded-[14px]" alt="Logo">
-          </div>`;
-        } else {
-          const words = (appState.brandName || "ST").trim().split(' ');
-          const initials = words.length > 1 ? (words[0][0] + words[1][0]) : words[0].substring(0, 2);
-          logoHTML = `<div class="w-12 h-12 rounded-2xl p-[2px] shrink-0 bg-gradient-to-tr from-emerald-500 to-teal-400">
-            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center font-black text-emerald-400 text-xl">${initials}</div>
-          </div>`;
-        }
+        const logoSrc = appState.logoData ? appState.logoData : 'icon.png';
+        const words = (appState.brandName || "ST").trim().split(' ');
+        const initials = words.length > 1 ? (words[0][0] + words[1][0]) : words[0].substring(0, 2);
+
+        logoHTML = `<div class="w-12 h-12 rounded-2xl p-[2px] shrink-0 bg-gradient-to-tr from-emerald-500 to-teal-400 relative overflow-hidden">
+          <img src="${logoSrc}" 
+               onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" 
+               class="w-full h-full object-cover rounded-[14px]" alt="Logo">
+          <div class="w-full h-full bg-slate-900 rounded-[14px] hidden items-center justify-center font-black text-emerald-400 text-xl">${initials}</div>
+        </div>`;
       }
 
       let statsHTML = '';
@@ -960,11 +1001,28 @@
         </div>`;
       }
 
-      // Direction / Alignment
+      // Main Text Direction / Alignment with Justify Support
       let dirClass = "dir-rtl text-right";
-      if (appState.textDirection === 'rtl-center') dirClass = "dir-rtl text-center";
+      if (appState.textDirection === 'rtl-justify') dirClass = "dir-rtl text-justify [text-justify:inter-word]";
+      else if (appState.textDirection === 'rtl-center') dirClass = "dir-rtl text-center";
       else if (appState.textDirection === 'ltr-left') dirClass = "dir-ltr text-left";
+      else if (appState.textDirection === 'ltr-justify') dirClass = "dir-ltr text-justify [text-justify:inter-word]";
       else if (appState.textDirection === 'ltr-center') dirClass = "dir-ltr text-center";
+
+      // Header Align Class
+      let headerAlignClass = "text-right justify-start";
+      if (appState.headerAlign === 'center') headerAlignClass = "text-center justify-center";
+      else if (appState.headerAlign === 'left') headerAlignClass = "text-left justify-end";
+
+      // Slogan Align Class
+      let sloganAlignClass = "text-right";
+      if (appState.sloganAlign === 'center') sloganAlignClass = "text-center";
+      else if (appState.sloganAlign === 'left') sloganAlignClass = "text-left dir-ltr";
+
+      // Footer Align Class
+      let footerAlignClass = "text-left";
+      if (appState.footerAlign === 'center') footerAlignClass = "text-center";
+      else if (appState.footerAlign === 'right') footerAlignClass = "text-right dir-rtl";
 
       let problemSectionHTML = '';
       if (appState.showProblemSection || appState.template === 'problem') {
@@ -996,30 +1054,30 @@
 
       const domainHTML = appState.showDomain ? `<span class="text-xs font-mono dir-ltr opacity-70">${appState.brandDomain}</span>` : '';
       const footerCustomHTML = (appState.showFooterCustom && appState.footerCustomText) ? `<span class="text-xs opacity-80 block mt-1">${appState.footerCustomText}</span>` : '';
-      const sloganHTML = (appState.showBrandSlogan && appState.brandSlogan) ? `<span class="text-[11px] opacity-75 block mt-0.5">${appState.brandSlogan}</span>` : '';
+      const sloganHTML = (appState.showBrandSlogan && appState.brandSlogan) ? `<span class="text-[11px] opacity-75 block mt-0.5 ${sloganAlignClass}">${appState.brandSlogan}</span>` : '';
       const headerExtraHTML = (appState.showHeaderExtra && appState.headerExtraText) ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-block mt-1">${appState.headerExtraText}</span>` : '';
       const subTitleBadgeHTML = (appState.showSubTitle && appState.subTitle) ? `<span class="text-xs font-bold px-3 py-1 rounded-full uppercase inline-block mb-2 text-emerald-400 bg-emerald-950/80 border border-emerald-500/30">${appState.subTitle}</span>` : '';
 
       cardElement.style.backgroundColor = appState.cardBgColor;
       cardElement.style.borderColor = appState.cardBorderColor;
 
-      // Render Selected Template
+      // Render Selected Template with Full Color Palette Integration
       if (appState.template === 'simpleDark' || appState.template === 'simpleLight') {
         const isLight = appState.template === 'simpleLight';
-        const bgColor = isLight ? '#ffffff' : '#090d16';
-        const txtColor = isLight ? '#0f172a' : '#f8fafc';
-        const bdColor = isLight ? '#e2e8f0' : '#1e293b';
+        const bgColor = isLight ? '#ffffff' : appState.cardBgColor;
+        const txtColor = isLight ? '#0f172a' : appState.textColor;
+        const bdColor = isLight ? '#e2e8f0' : appState.cardBorderColor;
 
         cardElement.style.backgroundColor = bgColor;
         cardElement.style.borderColor = bdColor;
 
         cardElement.innerHTML = `
           <div class="flex items-center justify-between pb-4 border-b ${isLight ? 'border-slate-200' : 'border-slate-800'} mb-5">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 ${headerAlignClass}">
               ${logoHTML}
               <div>
-                <div class="flex items-center gap-1.5">
-                  ${appState.showBrandName ? `<span class="font-bold text-base block" style="color:${txtColor}">${appState.brandName}</span>` : ''}
+                <div class="flex items-center gap-1.5 ${headerAlignClass}">
+                  ${appState.showBrandName ? `<span class="font-bold text-base block" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
                   ${badgeHTML}
                 </div>
                 ${appState.showBrandHandle && appState.brandHandle ? `<span class="text-xs font-mono opacity-60 block dir-ltr">${appState.brandHandle}</span>` : ''}
@@ -1027,7 +1085,7 @@
                 ${headerExtraHTML}
               </div>
             </div>
-            <div>
+            <div class="${footerAlignClass}">
               ${domainHTML}
             </div>
           </div>
@@ -1038,34 +1096,26 @@
           </div>
           ${problemSectionHTML}
           ${ctaBoxHTML}
-          ${footerCustomHTML ? `<div class="border-t ${isLight ? 'border-slate-200' : 'border-slate-800'} pt-3 mt-4 text-center">${footerCustomHTML}</div>` : ''}
+          ${footerCustomHTML ? `<div class="border-t ${isLight ? 'border-slate-200' : 'border-slate-800'} pt-3 mt-4 ${footerAlignClass}">${footerCustomHTML}</div>` : ''}
         `;
       } else if (appState.template === 'iosNotification') {
         const isDark = appState.themeMode === 'dark';
-        const iosBg = isDark ? 'rgba(30, 41, 59, 0.88)' : 'rgba(255, 255, 255, 0.92)';
-        const iosTxt = isDark ? '#f8fafc' : '#0f172a';
+        const iosBg = isDark ? appState.cardBgColor : 'rgba(255, 255, 255, 0.92)';
+        const iosTxt = isDark ? appState.textColor : '#0f172a';
         const iosSubTxt = isDark ? '#94a3b8' : '#64748b';
-        const iosBorder = isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.12)';
+        const iosBorder = isDark ? appState.cardBorderColor : 'rgba(0, 0, 0, 0.12)';
 
         cardElement.style.backgroundColor = iosBg;
         cardElement.style.borderColor = iosBorder;
-        cardElement.style.backdropFilter = 'blur(20px)';
 
-        let appIconHTML = '';
-        if (appState.showLogo && appState.logoData) {
-          appIconHTML = `<img src="${appState.logoData}" class="w-8 h-8 rounded-xl object-cover shrink-0 shadow-sm" alt="App Logo">`;
-        } else {
-          appIconHTML = `<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-green-400 flex items-center justify-center shrink-0 shadow-sm text-white font-bold text-xs">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          </div>`;
-        }
+        let appIconHTML = logoHTML || `<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-green-400 flex items-center justify-center shrink-0 shadow-sm text-white font-bold text-xs">ST</div>`;
 
         cardElement.innerHTML = `
           <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2.5 ${headerAlignClass}">
               ${appIconHTML}
               <div class="flex items-center gap-1.5">
-                <span class="font-bold text-xs tracking-wider uppercase" style="color:${iosSubTxt}">${appState.showBrandName ? appState.brandName : 'MESSAGES'}</span>
+                <span class="font-bold text-xs tracking-wider uppercase" style="color:${appState.brandNameColor}">${appState.showBrandName ? appState.brandName : 'MESSAGES'}</span>
                 ${badgeHTML}
                 ${appState.showBrandHandle && appState.brandHandle ? `<span class="text-[10px] font-mono opacity-60 dir-ltr">${appState.brandHandle}</span>` : ''}
               </div>
@@ -1082,14 +1132,14 @@
           ${ctaBoxHTML}
           <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px]" style="color:${iosSubTxt}">
             ${sloganHTML || '<span></span>'}
-            ${domainHTML}
+            <div class="${footerAlignClass}">${domainHTML}</div>
           </div>
           ${footerCustomHTML ? `<div class="text-center text-[10px] opacity-70 mt-1">${footerCustomHTML}</div>` : ''}
         `;
       } else if (appState.template === 'tweet') {
         cardElement.innerHTML = `
           <div class="flex items-center justify-between mb-5">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 ${headerAlignClass}">
               ${logoHTML}
               <div>
                 <div class="flex items-center gap-1.5">
@@ -1117,7 +1167,7 @@
           ${ctaBoxHTML}
           <div class="border-t border-slate-800/80 pt-4 mt-5 flex items-center justify-between">
             ${statsHTML}
-            <div class="text-left">
+            <div class="${footerAlignClass}">
               ${domainHTML}
               ${footerCustomHTML}
             </div>
@@ -1137,7 +1187,7 @@
           ${problemSectionHTML}
           ${ctaBoxHTML}
           <div class="border-t border-slate-800/80 pt-4 mt-5 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2.5 ${headerAlignClass}">
               ${logoHTML}
               <div>
                 <div class="flex items-center gap-1">
@@ -1147,7 +1197,7 @@
                 ${sloganHTML}
               </div>
             </div>
-            <div class="text-left">
+            <div class="${footerAlignClass}">
               ${domainHTML}
               ${footerCustomHTML}
             </div>
@@ -1156,21 +1206,21 @@
       } else if (appState.template === 'problem') {
         cardElement.innerHTML = `
           <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 ${headerAlignClass}">
               ${logoHTML}
               <div>
                 <div class="flex items-center gap-1">
-                  ${appState.showBrandName ? `<span class="font-bold text-sm">${appState.brandName}</span>` : ''}
+                  ${appState.showBrandName ? `<span class="font-bold text-sm" style="color:${appState.brandNameColor}">${appState.brandName}</span>` : ''}
                   ${badgeHTML}
                 </div>
                 ${sloganHTML}
               </div>
             </div>
-            ${domainHTML}
+            <div class="${footerAlignClass}">${domainHTML}</div>
           </div>
           ${problemSectionHTML}
           ${ctaBoxHTML}
-          ${footerCustomHTML ? `<div class="border-t border-slate-800/80 pt-2 mt-3 text-center">${footerCustomHTML}</div>` : ''}
+          ${footerCustomHTML ? `<div class="border-t border-slate-800/80 pt-2 mt-3 ${footerAlignClass}">${footerCustomHTML}</div>` : ''}
         `;
       } else if (appState.template === 'code') {
         cardElement.innerHTML = `
@@ -1187,7 +1237,7 @@
           </div>
           ${problemSectionHTML}
           ${ctaBoxHTML}
-          ${footerCustomHTML ? `<div class="border-t border-slate-800/80 pt-2 mt-3 text-center">${footerCustomHTML}</div>` : ''}
+          ${footerCustomHTML ? `<div class="border-t border-slate-800/80 pt-2 mt-3 ${footerAlignClass}">${footerCustomHTML}</div>` : ''}
         `;
       }
       
@@ -1214,11 +1264,13 @@
     function attachEventListeners() {
       const bindInput = (elem, key) => {
         if (!elem) return;
-        elem.addEventListener('input', (e) => {
+        const handler = (e) => {
           appState[key] = e.target.value;
           saveState();
           renderPreview();
-        });
+        };
+        elem.addEventListener('input', handler);
+        elem.addEventListener('change', handler);
       };
 
       const bindCheckbox = (elem, key) => {
@@ -1239,6 +1291,10 @@
       bindInput(brandDomainInput, 'brandDomain');
       bindInput(platformIconSelect, 'platformIcon');
       bindInput(verifiedToggle, 'verifiedType');
+
+      bindInput(headerAlignSelect, 'headerAlign');
+      bindInput(sloganAlignSelect, 'sloganAlign');
+      bindInput(footerAlignSelect, 'footerAlign');
 
       bindCheckbox(toggleBrandSlogan, 'showBrandSlogan');
       bindCheckbox(toggleHeaderExtra, 'showHeaderExtra');
@@ -1335,7 +1391,7 @@
           saveState();
           syncControlsFromState();
           renderPreview();
-          showToast("لوگو حذف شد");
+          showToast("لوگو آپلودی حذف شد (پیش‌فرض: icon.png)");
         });
       }
 
@@ -1352,12 +1408,12 @@
       }
       if (confirmResetBtn && resetModal) {
         confirmResetBtn.addEventListener('click', () => {
-          localStorage.removeItem('starteach_studio_v8');
+          localStorage.removeItem('starteach_studio_v8.5');
           appState = { ...DEFAULT_CONFIG };
           syncControlsFromState();
           renderPreview();
           resetModal.classList.add('hidden');
-          showToast("تنظیمات بازیابی شد");
+          showToast("تنظیمات به حالت اولیه بازگشت");
         });
       }
 
